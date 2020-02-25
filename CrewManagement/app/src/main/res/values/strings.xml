@@ -1,0 +1,29 @@
+<resources>
+    <string name="app_name">CrewManagement</string>
+    <string name="title_activity_main2">Main2Activity</string>
+    <string name="Delete_Member">Delete Member</string>
+    <string name="Delete_Job">Delete Job</string>
+    <string name="New_Member">New Member</string>
+    <string name="New_Job">New Job</string>
+    <string name="Welcome">Welcome administrator what would you like to use</string>
+    <string name="Enter">Enter</string>
+    <string name="Password">Password</string>
+    <string name="UserName">Username</string>
+    <string name="Login">Login</string>
+    <string name="Job">Job</string>
+    <string name="Name">Name</string>
+    <string name="Age">Age</string>
+    <string name="Date_of_Hire">Date of Hire</string>
+    <string name="lblProgressScreen">Progress Screen</string>
+    <string name="lblNumCompleted">Number of Completed Tasks:</string>
+    <string name="lblNumIncomplete">Number of Incomplete Tasks:</string>
+    <string name="lblSummary">Progress Report</string>
+    <string name="postMessage">Send</string>
+    <string name="lblPercent">Percent Complete:</string>
+    <string name="jobAssignmentHeader">JOB MANAGEMENT</string>
+    <string name="Assign_Job">Assign Job</string>
+    <string name="Create_Job">Create Job</string>
+    <string name="job_hint">Enter Job to assign</string>
+    <string name="employee_hint">Enter Employee for Job</string>
+    <string name="lblAppIntro">Welcome to the Crew Management Application. </string>
+</resources>
