@@ -18,6 +18,8 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.widget.ListView;
 import android.widget.Spinner;
 
@@ -27,7 +29,7 @@ public class Administrator extends AppCompatActivity {
 
     Spinner Members;//the members dropdown
 
-    Spinner sMenu;//the menu dropdown
+    //Spinner sMenu;//the menu dropdown
     Button NewMember;//button for creating new members
     Button DelMember;// button to delete  members
     Data info;// data class to hold the information needed for the app
@@ -46,7 +48,6 @@ public class Administrator extends AppCompatActivity {
         Bundle data = intent.getExtras();//getting extras from the intent
         info = (Data)data.getSerializable("data");
         Members = (Spinner)findViewById(R.id.ListofMembers);//retrieving the view by specifying its id
-        sMenu = (Spinner)findViewById(R.id.sMenu);//retrieving the view by specifying its id
         NewMember = (Button)findViewById(R.id.newMemBtn);//retrieving the view by specifying its id
         DelMember = (Button)findViewById(R.id.delMemBtn);//retrieving the view by specifying its id
         Integer numMem = info.getNumberOfMembers();
@@ -60,119 +61,77 @@ public class Administrator extends AppCompatActivity {
             name = info.getName(count++);
             names.add(name);
         }
-        //Adding items to menu for navigation
-        MenuItems.add("Administrator Screen");//adding Administrator Screen to the menu
-        MenuItems.add("Members Screen");//adding Members Screen to the menu
-        MenuItems.add("Progress Screen");//adding Progress Screen to the menu
-        MenuItems.add("Job Assignment Screen");//adding Job Assignment Screen to the menu
-        MenuItems.add("News Feed Screen");//adding News Feed Screen to the menu
-        MenuItems.add("Log out");//adding log out to the menu
 
         //putting the arrays into each adapter and put the adapter into the spinners
         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,MenuItems);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sMenu.setAdapter(mAdapter);
         adapter = new ArrayAdapter<String>(getApplicationContext(), android.R.layout.simple_spinner_dropdown_item,names);
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         Members.setAdapter(adapter);
+    }
 
-        Members.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            /*
-             * FUNCTION:	onItemSelected
-             * DESCRIPTION:	Whenever an item is selected
-             * PARAMETERS:	AdapterView<?> parent, View view, int position, long id
-             * RETURNS:	void - this function returns nothing
-             */
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                pointing = position + 1;
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        getMenuInflater().inflate(R.menu.activity_administrator, menu);
+        return true;
+    }
 
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-
-            }
-        });
-
-        sMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            /*
-             * FUNCTION:	onItemSelected
-             * DESCRIPTION:	Whenever an item is selected
-             * PARAMETERS:	AdapterView<?> parent, View view, int position, long id
-             * RETURNS:	void - this function returns nothing
-             */
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position > 0)//ensuring the user didn't select the screen they're currently on
-                {
-                    if(position == 1)//seeing if the user chose the first option
-                    {
-                        //creating a new intent for the members screen
-                        Intent intent = new Intent(Administrator.this, MembersScreen.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", info);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to members screen.");
-                        finish();
-                    }
-                    else if(position == 2)//seeing if the user chose the second option
-                    {
-                        //creating a new intent for the progress screen
-                        Intent intent = new Intent(Administrator.this, ProgressScreen.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", info);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to progress screen.");
-                        finish();
-                    }
-                    else if(position == 3)//seeing if the user chose the third option
-                    {
-                        //creating a new intent for the job assignment screen
-                        Intent intent = new Intent(Administrator.this, JobAssignment.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", info);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to the job assignment screen.");
-                        finish();
-                    }
-                    else if(position == 4)//seeing if the user chose the fourth option
-                    {
-                        Intent intent = new Intent(Administrator.this, NewsFeed.class);
-                        intent.putExtra("data", info);
-                        startActivity(intent);
-                        Log.i("Admin","Going to news feed screen.");
-                        finish();
-                    }
-                    else if(position == 5)//seeing if the user chose the fifth option
-                    {
-                        //creating a new intent for the login screen
-                        Intent intent = new Intent (Administrator.this, MainActivity.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", info);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to login screen.");
-                        finish();
-                    }
-                }
-
-            }
-            /*
-             * FUNCTION:	onNothingSelected
-             * DESCRIPTION:	Whenever an item is not selected
-             * PARAMETERS:	AdapterView<?> parent
-             * RETURNS:	void - this function returns nothing
-             */
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case R.id.menu_activity2:
+                Intent intent = new Intent(Administrator.this, MembersScreen.class);
+                //putting the Data object into the extras
+                intent.putExtra("data", info);
+                //starting the new activity
+                startActivity(intent);
+                Log.i("Admin","Going to members screen.");
+                finish();
+                return true;
+            case R.id.menu_activity3:
+                //creating a new intent for the progress screen
+                Intent intent2 = new Intent(Administrator.this, ProgressScreen.class);
+                //putting the Data object into the extras
+                intent2.putExtra("data", info);
+                //starting the new activity
+                startActivity(intent2);
+                Log.i("Admin","Going to progress screen.");
+                finish();
+                return true;
+            case R.id.menu_activity4:
+                //creating a new intent for the job assignment screen
+                Intent intent3 = new Intent(Administrator.this, JobAssignment.class);
+                //putting the Data object into the extras
+                intent3.putExtra("data", info);
+                //starting the new activity
+                startActivity(intent3);
+                Log.i("Admin","Going to the job assignment screen.");
+                finish();
+                return true;
+            case R.id.menu_activity5:
+                Intent intent4 = new Intent(Administrator.this, NewsFeed.class);
+                intent4.putExtra("data", info);
+                startActivity(intent4);
+                Log.i("Admin","Going to news feed screen.");
+                finish();
+                return true;
+            case R.id.menu_activity6:
+                //creating a new intent for the login screen
+                Intent intent5 = new Intent (Administrator.this, MainActivity.class);
+                //putting the Data object into the extras
+                intent5.putExtra("data", info);
+                //starting the new activity
+                startActivity(intent5);
+                Log.i("Admin","Going to login screen.");
+                finish();
+                return true;
+            default:
+                return false;
+        }
     }
     /*
      * FUNCTION:	btnNewMember
