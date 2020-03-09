@@ -71,13 +71,28 @@ public class Administrator extends AppCompatActivity {
     }
 
 
+    /*
+     * FUNCTION:	 onCreateOptionsMenu
+     * DESCRIPTION:	This function is event handler for whenever the options menu is created
+     * PARAMETERS:	Menu menu - this parameter indicates what menu is created
+     * RETURNS:	    bool - this function returns a boolean value based on it's operation
+     */
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        //inflating the specified menu for the administrator screen
         getMenuInflater().inflate(R.menu.activity_administrator, menu);
         return true;
     }
 
+
+
+    /*
+     * FUNCTION:	 onOptionsItemSelected
+     * DESCRIPTION:	This function is event handler for whenever an option within the menu has been selected
+     * PARAMETERS:	MenuItem item - this parameter indicates what item has been selected
+     * RETURNS:	    bool - this function returns a boolean value based on it's operation
+     */
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -133,6 +148,8 @@ public class Administrator extends AppCompatActivity {
                 return false;
         }
     }
+
+
     /*
      * FUNCTION:	btnNewMember
      * DESCRIPTION:	Whenever button is clicked
