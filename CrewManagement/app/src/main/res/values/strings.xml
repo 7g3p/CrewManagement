@@ -26,4 +26,16 @@
     <string name="job_hint">Enter Job to assign</string>
     <string name="employee_hint">Enter Employee for Job</string>
     <string name="lblAppIntro">Welcome to the Crew Management Application. </string>
+    <string name="defaultJob1">Lumber Yard</string>
+    <string name="defaultJob2">Sweeper</string>
+    <string name="defaultJob3">Crane Operator</string>
+    <string name="defaultJob4">Supervisor</string>
+    <string name="defaultJob5">Sign Holder</string>
+    <string name="defaultJob6">Human Resources</string>
+    <string name="menuOption1">Administration Screen</string>
+    <string name="menuOption2">Members Screen</string>
+    <string name="menuOption3">Progress Screen</string>
+    <string name="menuOption4">Job Assignment Screen</string>
+    <string name="menuOption5">News Feed Screen</string>
+    <string name="menuOption6">Log out</string>
 </resources>
