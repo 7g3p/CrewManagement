@@ -9,14 +9,17 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Members_Fragment"></activity>
+        <activity android:name=".progress_fragment" />
         <activity android:name=".ChangePassword" />
         <activity android:name=".NewJob" />
         <activity android:name=".NewMember" />
         <activity android:name=".Administrator" />
         <activity android:name=".MembersScreen" />
         <activity android:name=".ProgressScreen" />
-        <activity android:name=".NewsFeed"/>
-        <activity android:name=".JobAssignment"/>
+        <activity android:name=".NewsFeed" />
+        <activity android:name=".JobAssignment" />
+        <activity android:name=".ViewScreen"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

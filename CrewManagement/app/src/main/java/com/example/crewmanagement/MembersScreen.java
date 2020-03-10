@@ -137,12 +137,12 @@ public class MembersScreen extends AppCompatActivity
         {
             /*
              * FUNCTION:
-             *		onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
+             *		onChildClick(ExpandableListView parent, ViewScreen v, int groupPosition, int childPosition, long id)
              * DESCRIPTION:
              *		Displays a small message of which child was selected on event
              * PARAMETERS:
              *			ExpandableListView parent : the parent of the selected child
-             *			View v : the view
+             *			ViewScreen v : the view
              *			int groupPosition : the position of the parent of the selected child
              *			int childPosition : the position within the parent group of the selected child
              *			long id : the child's ID

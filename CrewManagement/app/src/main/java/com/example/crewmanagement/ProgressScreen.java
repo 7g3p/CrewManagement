@@ -97,7 +97,7 @@ public class ProgressScreen extends AppCompatActivity {
 
         //Adding items to menu for navigation
         MenuItems.add("Administration Screen");//adding Administration Screen to the menu
-        MenuItems.add("Members Screen");//adding Members Screen to the menu
+        MenuItems.add("Members_Fragment Screen");//adding Members_Fragment Screen to the menu
         MenuItems.add("Job Assignment Screen");//adding Job Assignment Screen to the menu
         MenuItems.add("News Feed Screen");//adding News Feed Screen to the menu
         MenuItems.add("Log out");//adding log out to the menu
@@ -111,7 +111,7 @@ public class ProgressScreen extends AppCompatActivity {
             /*
              * FUNCTION:	onItemSelected
              * DESCRIPTION:	Whenever an item is selected
-             * PARAMETERS:	AdapterView<?> parent, View view, int position, long id
+             * PARAMETERS:	AdapterView<?> parent, ViewScreen view, int position, long id
              * RETURNS:	void - this function returns nothing
              */
             @Override

@@ -1,11 +1,11 @@
 /*
- * FILE              progress_fragment.java
+ * FILE              Members_Fragment.java
  * PROJECT:          CrewManagement
  * PROGRAMMER:       Marissa Schmitt
  * OTHER MEMBERS:    Alex MacCumber, David Obeda, Alex Palmer, Stephen Perrin
  * FIRST VERSION:    March 5th, 2020
- * DESCRIPTION:      This file describes the functionality and events of the progress screen within
- *                      the view screen.
+ * DESCRIPTION:      This file describes the functionality and events of the members fragment
+ *                      within the view screen.
  */
 package com.example.crewmanagement;
 
@@ -16,9 +16,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import com.example.crewmanagement.ui.progress.ProgressFragmentFragment;
-
-public class progress_fragment extends Fragment {
+public class Members_Fragment extends Fragment {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -27,8 +25,8 @@ public class progress_fragment extends Fragment {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-            Bundle savedInstanceState)
+                             Bundle savedInstanceState)
     {
-        return inflater.inflate(R.layout.activity_progress_screen, container, false);
+        return inflater.inflate(R.layout.activity_members_screen, container, false);
     }
 }

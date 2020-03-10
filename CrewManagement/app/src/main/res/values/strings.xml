@@ -34,7 +34,7 @@
     <string name="defaultJob6">Human Resources</string>
     <string name="menuOption1">Administration Screen</string>
     <string name="menuOption2">Members Screen</string>
-    <string name="menuOption3">Progress Screen</string>
+    <string name="menuOption3">View Screen</string>
     <string name="menuOption4">Job Assignment Screen</string>
     <string name="menuOption5">News Feed Screen</string>
     <string name="menuOption6">Log out</string>
