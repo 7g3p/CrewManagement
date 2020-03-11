@@ -22,7 +22,7 @@ public class DBAdapter
 {
     // RetCode Meanings
     public static final int SUCCESS = 1;
-    public static final int FAILURE = 0;
+    public static final int FAILURE = -100;
     public static final int INVALID_USERNAME = -1;
     public static final int INVALID_PASSWORD = -2;
     public static final int INVALID_NAME = -3;
@@ -32,6 +32,8 @@ public class DBAdapter
     public static final int INVALID_EXPECTED_JOB_DURATION = -1;
     public static final int INVALID_ACTUAL_JOB_DURATION = -2;
     public static final int INVALID_COMPLETION_STATUS = -3;
+    public static final int FAILED_TO_RETRIEVE_MEMBERID = -1;
+    public static final int FAILED_TO_RETRIEVE_JOBID = -1;
 
     // Database Constants
     private static final String DB_NAME = " CrewManagementDBVersion1";
@@ -409,7 +411,7 @@ public class DBAdapter
         else if (name.contains(" "))
         {
             fName = name.substring(0, name.indexOf(' '));
-            lName = name.substring(name.indexOf(' '), name.length());
+            lName = name.substring(name.indexOf(' ') + 1, name.length());
 
             if (fName.contains(" ") || lName.contains(" "))
             {
@@ -613,6 +615,132 @@ public class DBAdapter
 
         // Insert into the database
         retValue = db.insert("Jobs", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		IdentifyMemberID(String name, Integer age, String doh)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and searches for the memberID associated with the parameters given
+     * PARAMETERS:
+     *			String name     : The member's first and last name (To be parsed)
+     *          Integer age     : The member's age
+     *          String doh      : The member's date of hire
+     * RETURNS:
+     *			int : Returns the MemberID of the found Member based on the data in the parameters else if no member is found FAILURE retCode is returned
+     */
+    public int IdentifyMemberID(String name, Integer age, String doh)
+    {
+        // Variables
+        int retValue = FAILURE;
+        Cursor cursor;
+        String[] args = new String[4];
+
+        // Transfer the parameters to the argument array
+        args[0] = name.substring(0, name.indexOf(' '));
+        args[1] = name.substring(name.indexOf(' '), name.length());
+        args[2] = Integer.toString(age);
+        args[3] = doh;
+
+        this.openReadableDB();
+
+        cursor = db.rawQuery("SELECT MemberID FROM Members WHERE FirstName = ? AND LastName = ? AND Age = ? AND DateOfHire = ?", args);
+
+        if (cursor.getCount() == 0)
+        {
+            return FAILED_TO_RETRIEVE_MEMBERID;
+        }
+        else
+        {
+            while(cursor.moveToNext())
+            {
+                retValue = cursor.getInt(0);
+            }
+        }
+
+        this.closeCursor(cursor);
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		IdentifyJobID(String jobName)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and searches for the JobID associated with the parameters given
+     * PARAMETERS:
+     *			String jobName  : The job's name
+     * RETURNS:
+     *			int : Returns the JobID of the found Job based on the data in the parameters else if no Job is found FAILURE retCode is returned
+     */
+    public int IdentifyJobID(String jobName)
+    {
+        // Variables
+        int retValue = FAILURE;
+        Cursor cursor;
+        String[] args = new String[1];
+
+        // Transfer the parameters to the argument array
+        args[0] = jobName;
+
+        this.openReadableDB();
+
+        cursor = db.rawQuery("SELECT JobID FROM Jobs WHERE JobName = ? ", args);
+
+        if (cursor.getCount() == 0)
+        {
+            return FAILED_TO_RETRIEVE_JOBID;
+        }
+        else
+        {
+            while(cursor.moveToNext())
+            {
+                retValue = cursor.getInt(0);
+            }
+        }
+
+        this.closeCursor(cursor);
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		AssignJobToMember(String name, Integer age, String doh, String jobName)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String name     : The Member's name (used in tandem with the "doh" and "age" parameters to identify the member and retrieve the memberID)
+     *          Integer age     : The Member's age (used in tandem with the "name" and "doh" parameters to identify the member and retrieve the memberID)
+     *          String doh      : The Member's DateOfHire (used in tandem with the "name" and "age" parameters to identify the member and retrieve the memberID)
+     *			String jobName  : The job's name (used to find the job's JobID)
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned
+     */
+    public long AssignJobToMember(String name, Integer age, String doh, String jobName)
+    {
+        // Variables
+        long retValue = 0;
+        ContentValues cv = new ContentValues();
+
+        this.openWriteableDB();
+
+        cv.put("MemberID", IdentifyMemberID(name, age, doh));
+        cv.put("JobID", IdentifyJobID(jobName));
+        cv.put("Status", 0);
+
+        retValue = db.insert("JobMemberList", null, cv);
 
         if (retValue == -1)
         {
