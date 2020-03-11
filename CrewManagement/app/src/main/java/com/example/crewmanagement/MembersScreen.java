@@ -13,6 +13,7 @@ package com.example.crewmanagement;
 
 import com.example.crewmanagement.Data;
 import com.example.crewmanagement.HashmapListAdapter;
+import com.example.crewmanagement.DBAdapter;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -63,7 +64,12 @@ public class MembersScreen extends AppCompatActivity
 
         // Get intent and the member's data
         intent = getIntent();
-        data = (Data)intent.getExtras().getSerializable("data");
+        //data = (Data)intent.getExtras().getSerializable("data");
+
+        ////////////////////////////////////////////////
+        DBAdapter db = new DBAdapter(this);
+        data = db.GetData();
+        ////////////////////////////////////////////////
 
         // Set list of members according to data
         listView = (ExpandableListView) findViewById(R.id.MembersList);
@@ -93,7 +99,7 @@ public class MembersScreen extends AppCompatActivity
         listViewAdapter = new HashmapListAdapter(this, membersNames, listDetails);
         listView.setAdapter(listViewAdapter);
 
-    // Setting the listener
+        // Setting the listener
         listView.setOnGroupExpandListener(new ExpandableListView.OnGroupExpandListener()
         {
 
