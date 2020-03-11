@@ -205,6 +205,7 @@ public class DBAdapter
             else
             {
                 pJob.add("Employee");
+                newData.numberOfMembers++;
             }
             eName.add(cursor.getString(4) + " " + cursor.getString(5));
             pAge.add(cursor.getInt(6));
@@ -237,6 +238,30 @@ public class DBAdapter
                 while (cursor.moveToNext())
                 {
                     pAssignedJob.add(cursor.getString(0));
+                }
+            }
+        }
+
+        // Find the number of completed/uncompleted jobs
+        cursor = db.rawQuery("SELECT IsCompleted FROM Jobs", null);
+
+        // If no rows are returned then there are no jobs else check if the job is completed or not and add one to the appropriate counter
+        if (cursor.getCount() == 0)
+        {
+            newData.completedJobs = 0;
+            newData.uncompletedJobs = 0;
+        }
+        else
+        {
+            while (cursor.moveToNext())
+            {
+                if (cursor.getInt(0) == 0)
+                {
+                    newData.uncompletedJobs++;
+                }
+                else
+                {
+                    newData.completedJobs++;
                 }
             }
         }
