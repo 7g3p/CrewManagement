@@ -16,6 +16,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import android.view.ContextThemeWrapper;
 
 public class DBAdapter
 {
@@ -28,6 +29,9 @@ public class DBAdapter
     public static final int AGE_NOT_IN_RANGE = -4;
     public static final int INVALID_DATE_FORMAT = -5;
     public static final int INVALID_JOB_TITLE = -6;
+    public static final int INVALID_EXPECTED_JOB_DURATION = -1;
+    public static final int INVALID_ACTUAL_JOB_DURATION = -2;
+    public static final int INVALID_COMPLETION_STATUS = -3;
 
     // Database Constants
     private static final String DB_NAME = " CrewManagementDBVersion1";
@@ -178,6 +182,36 @@ public class DBAdapter
 
     /*
      * FUNCTION:
+     *		getNumberOfJobs()
+     * DESCRIPTION:
+     *		Queries the database to find the number of jobs
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			int : Returns the number of jobs in the database (this value can double as the new JobID)
+     */
+    private int getNumberOfJobs()
+    {
+        // Variables
+        Cursor cursor;
+        int count = 0;
+
+        this.openReadableDB();
+
+        cursor = db.rawQuery("SELECT JobID FROM Jobs", null);
+
+        while(cursor.moveToNext())
+        {
+            count++;
+        }
+
+        this.closeDB();
+
+        return count;
+    }
+
+    /*
+     * FUNCTION:
      *		getNumberOfMembers()
      * DESCRIPTION:
      *		Queries the database to find the number of members (including admin)
@@ -200,6 +234,8 @@ public class DBAdapter
         {
             count++;
         }
+
+        this.closeDB();
 
         return count;
     }
@@ -351,7 +387,7 @@ public class DBAdapter
      *          String phone      : The new member's phone (*****NOTE: phone can be set to null in parameters to enter default value ("000-000-0000") into database*****)
      *          byte[] profilePic : The new member's profile picture (*****NOTE: ProfilePicture can be set to null in parameters to enter default value (null) into database*****)
      * RETURNS:
-     *			long : Returns the RowID of the newly inserted row on success, else returns one of the class designated retValues
+     *			long : Returns the RowID of the newly inserted row on success, else returns one of the class designated retValues (Non-negative value = success)
      */
     public long InsertNewMember(String user, String pass, String name, Integer age, String doh, Integer access, String phone, byte[] profilePic)
     {
@@ -495,7 +531,96 @@ public class DBAdapter
             return FAILURE;
         }
 
+        this.closeDB();
+
         // Return the RowID of the newly inserted row
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		InsertNewJob(String jobName, String startDate, Integer expectedDuration, Integer actualDuration, Integer isCompleted)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts them into the Jobs table.
+     * PARAMETERS:
+     *			String jobName              : The new job's job name
+     *          String startDate            : The new job's start date (******NOTE: startDate can be set to null in parameters to enter default value (Current Date in YYYY-MM-DD format) into database*****)
+     *          Integer expectedDuration    : The new job's expected duration (in days) (*****NOTE: expectedDuration can be set to null in parameters to enter default value (1) into database*****)
+     *          Integer actualDuration      : The new job's actual duration (in days (*****NOTE: actualDuration can be set to null in parameters to enter default value (0) into database*****)
+     *          Integer isCompleted         : The new job's access (*****NOTE: isCompleted can be set to null in parameters to enter default value (0 (Incomplete)) into database*****)
+     * RETURNS:
+     *			long : Returns the RowID of the newly inserted row on success, else returns one of the class designated retValues (Non-negative value = success)
+     */
+    public long InsertNewJob(String jobName, String startDate, Integer expectedDuration, Integer actualDuration, Integer isCompleted)
+    {
+        // Variables
+        long retValue = 0;
+        int jobID = getNumberOfJobs();
+        ContentValues cv = new ContentValues();
+
+        this.openWriteableDB();
+
+        // Store New Job ID
+        cv.put("JobID", jobID);
+
+        // I don't know how to test the jobName for not having sqlite commands so just gonna leave this vulnerability here to figure out later
+        cv.put("JobName", jobName);
+
+        // Check that the date of hire is in the correct format else if null/"Unknown" then set to today's date (in format YYYY-MM-DD)
+        if (!startDate.matches("^((19|2[0-9])[0-9]{2})-(0[1-9]|1[012])-(0[1-9]|[12][0-9]|3[01])$"))
+        {
+            return INVALID_DATE_FORMAT;
+        }
+        else if (startDate == "Unknown" || startDate == null)
+        {
+            Date currDate = Calendar.getInstance().getTime();
+            SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD");
+
+            startDate = df.format(currDate);
+        }
+
+        cv.put("StartDate", startDate);
+
+        // Check if the expectedJobDuration is not less than or equal to 0 else set to default 1
+        if (expectedDuration <= 0)
+        {
+            return INVALID_EXPECTED_JOB_DURATION;
+        }
+        else
+        {
+            cv.put("ExpectedJobDuration", 1);
+        }
+
+        // Check that actual job duration is not less than 0 else set to default 0
+        if (actualDuration < 0)
+        {
+            return INVALID_ACTUAL_JOB_DURATION;
+        }
+        else
+        {
+            cv.put("ActualJobDuration", 0);
+        }
+
+        // Check that IsCompleted status is within range else set to default 0 (incomplete status)
+        if (!(isCompleted >= 0 && isCompleted <= 1))
+        {
+            return INVALID_COMPLETION_STATUS;
+        }
+        else
+        {
+            cv.put("IsCompleted", 0);
+        }
+
+        // Insert into the database
+        retValue = db.insert("Jobs", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
         return retValue;
     }
 
