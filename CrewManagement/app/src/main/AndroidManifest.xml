@@ -9,14 +9,44 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
+        <activity android:name=".Navigation" />
         <activity android:name=".ChangePassword" />
         <activity android:name=".NewJob" />
         <activity android:name=".NewMember" />
-        <activity android:name=".Administrator" />
-        <activity android:name=".MembersScreen" />
-        <activity android:name=".ProgressScreen" />
-        <activity android:name=".NewsFeed"/>
-        <activity android:name=".JobAssignment"/>
+        <activity android:name=".Administrator"
+            android:label="Administrator"
+            android:parentActivityName=".Navigation">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Navigation"></meta-data>
+        </activity>
+
+        <activity android:name=".MembersScreen"
+            android:label="MembersScreen"
+            android:parentActivityName=".Navigation">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Navigation"></meta-data>
+        </activity>
+
+
+        <activity android:name=".ProgressScreen"
+            android:label="ProgressScreen"
+            android:parentActivityName=".Navigation">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Navigation"></meta-data>
+        </activity>
+        <activity android:name=".NewsFeed"
+            android:label="NewsFeed"
+            android:parentActivityName=".Navigation">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Navigation"></meta-data>
+        </activity>
+        <activity android:name=".JobAssignment"
+            android:label="JobAssignment"
+            android:parentActivityName=".Navigation">
+            <meta-data android:name="android.support.PARENT_ACTIVITY"
+                android:value=".Navigation"></meta-data>
+        </activity>
+
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
