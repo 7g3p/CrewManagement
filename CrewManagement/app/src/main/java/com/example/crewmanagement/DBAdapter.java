@@ -265,6 +265,8 @@ public class DBAdapter
         ArrayList<String> eName = new ArrayList<String>();
         ArrayList<Integer> pAge = new ArrayList<Integer>();
         ArrayList<String> pJob = new ArrayList<String>();
+        ArrayList<String> pPhone = new ArrayList<String>();
+        ArrayList<Byte[]> pImage = new ArrayList<Byte[]>();
         ArrayList<String> dateOfHire = new ArrayList<String>();
         ArrayList<String> pAssignedJob = new ArrayList<String>();
         ArrayList<String> jobList = new ArrayList<String>();
@@ -275,7 +277,8 @@ public class DBAdapter
 
         // Get the all members' data (including related data in other tables) present in the database
         cursor = db.rawQuery("SELECT u.MemberID, u.Username, u.Password, u.Access," +
-                " m.Firstname, m.Lastname, m.Age, m.DateOfHire" +
+                " m.Firstname, m.Lastname, m.Age, m.DateOfHire, " +
+                "m.Phone, m.Image"+
                 " FROM Users u" +
                 " INNER JOIN Members m ON u.MemberID == m.MemberID", null);
 
