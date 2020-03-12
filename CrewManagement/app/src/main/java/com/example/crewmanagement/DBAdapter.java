@@ -60,7 +60,7 @@ public class DBAdapter
             ")";
     public static final String CREATE_JOBS_TABLE = "CREATE TABLE IF NOT EXISTS `Jobs` (" +
             " `JobID` INTEGER DEFAULT NULL PRIMARY KEY AUTOINCREMENT UNIQUE, " +
-            " `JobName` TEXT NOT NULL DEFAULT 'N/A', " +
+            " `JobName` TEXT NOT NULL UNIQUE DEFAULT 'N/A', " +
             " `StartDate` TEXT NOT NULL DEFAULT '00-00-0000', " +
             " `ExpectedJobDuration` INTEGER NOT NULL DEFAULT 0, " +
             " `ActualJobDuration` INTEGER NOT NULL DEFAULT 0, " +
@@ -718,9 +718,7 @@ public class DBAdapter
      * DESCRIPTION:
      *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
      * PARAMETERS:
-     *          String name     : The Member's name (used in tandem with the "doh" and "age" parameters to identify the member and retrieve the memberID)
-     *          Integer age     : The Member's age (used in tandem with the "name" and "doh" parameters to identify the member and retrieve the memberID)
-     *          String doh      : The Member's DateOfHire (used in tandem with the "name" and "age" parameters to identify the member and retrieve the memberID)
+     *          String username : The Member's username (used to identify the member)
      *			String jobName  : The job's name (used to find the job's JobID)
      * RETURNS:
      *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned
@@ -749,8 +747,58 @@ public class DBAdapter
         return retValue;
     }
 
+    /*
+     * FUNCTION:
+     *		UpdatePassword(String username, String newPassword)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String newPassword  : The Member's new Password
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdatePassword(String username, String newPassword)
+    {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
 
+        // Check that the password is valid and not malicious
+        if (newPassword.contains(" ") || newPassword.contains(",") || newPassword.contains("'"))
+        {
+            return INVALID_PASSWORD;
+        }
+        else
+        {
+            cv.put("Password", newPassword);
+        }
 
+        // Check that the username is valid (for security of database)
+        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = username;
+        }
+
+        this.openWriteableDB();
+
+        retValue = db.update("Users", cv, "Username", args);
+
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
 
 }
 
