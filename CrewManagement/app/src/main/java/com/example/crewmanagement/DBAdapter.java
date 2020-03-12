@@ -256,7 +256,6 @@ public class DBAdapter
     public Data GetData()
     {
         // Variables
-        int counter = 0;
         Cursor cursor;
         Data newData = new Data();
         ArrayList<String> memberIDs = new ArrayList<String>();
@@ -300,7 +299,6 @@ public class DBAdapter
             eName.add(cursor.getString(4) + " " + cursor.getString(5));
             pAge.add(cursor.getInt(6));
             dateOfHire.add(cursor.getString(7));
-            counter++;
         }
 
         // Temp string variable for the query's argument
@@ -838,6 +836,9 @@ public class DBAdapter
 
         return retValue;
     }
+
+
+
 
 }
 
