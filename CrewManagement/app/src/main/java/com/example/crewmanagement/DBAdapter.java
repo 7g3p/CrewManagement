@@ -265,6 +265,8 @@ public class DBAdapter
         ArrayList<String> eName = new ArrayList<String>();
         ArrayList<Integer> pAge = new ArrayList<Integer>();
         ArrayList<String> pJob = new ArrayList<String>();
+        ArrayList<String> pPhone = new ArrayList<String>;
+        ArrayList<Byte[]> pImage = new ArrayList<Byte[]>;
         ArrayList<String> dateOfHire = new ArrayList<String>();
         ArrayList<String> pAssignedJob = new ArrayList<String>();
         ArrayList<String> jobList = new ArrayList<String>();
@@ -276,6 +278,7 @@ public class DBAdapter
         // Get the all members' data (including related data in other tables) present in the database
         cursor = db.rawQuery("SELECT u.MemberID, u.Username, u.Password, u.Access," +
                 " m.Firstname, m.Lastname, m.Age, m.DateOfHire" +
+                "m.Phone, m.ProfilePicture"
                 " FROM Users u" +
                 " INNER JOIN Members m ON u.MemberID == m.MemberID", null);
 
@@ -300,6 +303,8 @@ public class DBAdapter
             eName.add(cursor.getString(4) + " " + cursor.getString(5));
             pAge.add(cursor.getInt(6));
             dateOfHire.add(cursor.getString(7));
+            pPhone.add(cursor.getString(8));
+            pImage.add(cursor.getBlob(9));
             counter++;
         }
 
@@ -364,6 +369,8 @@ public class DBAdapter
         newData.pAge = pAge;
         newData.dateOfHire = dateOfHire;
         newData.pJob = pJob;
+        newData.pPhone = pPhone;
+        newData.pImages = pImage;
         newData.pAssignedJob = pAssignedJob;
         newData.jobList = jobList;
         newData.jobStatus = jobStatus;
