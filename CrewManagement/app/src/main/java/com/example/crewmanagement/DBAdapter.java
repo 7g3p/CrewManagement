@@ -1,3 +1,12 @@
+/*
+ * FILE : DBAdapter
+ * PROJECT : PROG3150 - Assignment #2
+ * PROGRAMMER : Stephen Perrin, Alex Palmer, Alex MacCumber, David Obeda, Marissa Schmitt
+ * FIRST VERSION : 2020-03-10
+ * DESCRIPTION :
+ * The functions in this file are used to interface between the application and the database. Allowing for selecting, inserting, and updating
+ * records within the database.
+ */
 package com.example.crewmanagement;
 
 import com.example.crewmanagement.Data;
@@ -18,22 +27,27 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 
+/*
+ * NAME:     DBAdapter
+ * PURPOSE:  The purpose of the DBAdapter class is to read and write to and from the database any relevant data.
+ *           It is the interface between the application and the database.
+ */
 public class DBAdapter
 {
-    // RetCode Meanings
+    // RetCode Meanings (General meaning is that any negative retValue indicates failure while positive indicates success)
     public static final int SUCCESS = 1;
     public static final int FAILURE = -100;
     public static final int INVALID_USERNAME = -1;
+    public static final int FAILED_TO_RETRIEVE_MEMBERID = -1;
+    public static final int FAILED_TO_RETRIEVE_JOBID = -1;
+    public static final int INVALID_EXPECTED_JOB_DURATION = -1;
     public static final int INVALID_PASSWORD = -2;
+    public static final int INVALID_ACTUAL_JOB_DURATION = -2;
     public static final int INVALID_NAME = -3;
+    public static final int INVALID_COMPLETION_STATUS = -3;
     public static final int AGE_NOT_IN_RANGE = -4;
     public static final int INVALID_DATE_FORMAT = -5;
     public static final int INVALID_JOB_TITLE = -6;
-    public static final int INVALID_EXPECTED_JOB_DURATION = -1;
-    public static final int INVALID_ACTUAL_JOB_DURATION = -2;
-    public static final int INVALID_COMPLETION_STATUS = -3;
-    public static final int FAILED_TO_RETRIEVE_MEMBERID = -1;
-    public static final int FAILED_TO_RETRIEVE_JOBID = -1;
 
     // Database Constants
     private static final String DB_NAME = " CrewManagementDBVersion1";
@@ -101,14 +115,41 @@ public class DBAdapter
     public static final String DROP_NEWSFEEDPOSTS_TABLE = "DROP TABLE IF EXISTS `NewFeedPosts`";
 
     //////////////////////////////////////////////////////////////////////////////////
+    /*
+     * NAME:     DBHelper extends SQLiteOpenHelper
+     * PURPOSE:  The purpose of the DBHelper is to open the database within the appropriate context and, should it be needed, reset/upgrade the database with default admin values
+     */
     private static class DBHelper extends SQLiteOpenHelper
     {
 
+        /*
+         * FUNCTION:
+         *		onCreate(SQLiteDatabase db)
+         * DESCRIPTION:
+         *		Sets the current context in which the database is working in, the database's name, and the version number
+         * PARAMETERS:
+         *			Context context       : The current working context
+         *          String name           : The name of the database
+         *          CursorFactory factory : To be honest I don't really know what this is as its always null :/
+         *          int version           : The version number of the database
+         * RETURNS:
+         *			N/A
+         */
         public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
         {
             super(context, name, factory, version);
         }
 
+        /*
+         * FUNCTION:
+         *		onCreate(SQLiteDatabase db)
+         * DESCRIPTION:
+         *		Creates all tables in the database with the default admin data (***WARNING CALLING THIS RESETS THE DATABASE WITH ONLY DEFAULT VALUES***)
+         * PARAMETERS:
+         *			SQLiteDatabase db   : The database that will hold the created database
+         * RETURNS:
+         *			N/A
+         */
         @Override
         public void onCreate(SQLiteDatabase db)
         {
@@ -126,6 +167,18 @@ public class DBAdapter
             db.execSQL("INSERT INTO Users (MemberID, Username, Password, Access) VALUES (0, 'admin', '1234', 1)");
         }
 
+        /*
+         * FUNCTION:
+         *		onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+         * DESCRIPTION:
+         *		Drops all tables in the database, updates the version number to the new version number and recalls the OnCreate method with default values (***WARNING CALLING THIS RESETS THE DATABASE WITH ONLY DEFAULT VALUES***)
+         * PARAMETERS:
+         *			SQLiteDatabase db   : The database that will be upgraded
+         *          int oldVersion      : The old version number
+         *          int newVersion      : The new version number
+         * RETURNS:
+         *			N/A
+         */
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
         {
@@ -149,21 +202,61 @@ public class DBAdapter
     }
     //////////////////////////////////////////////////////////////////////////////////
 
+    /*
+     * FUNCTION:
+     *		DBAdapter(Context context)
+     * DESCRIPTION:
+     *		Sets the database helper to the current context of the activity
+     * PARAMETERS:
+     *			Context context : The current activity that is being used (usually called via "= new DBAdapter(this);")
+     * RETURNS:
+     *			N/A
+     */
     public DBAdapter (Context context)
     {
         dbHelper = new DBHelper(context, DB_NAME, null, DB_VERSION);
     }
 
+    /*
+     * FUNCTION:
+     *		openReadableDatabase()
+     * DESCRIPTION:
+     *		Sets the db (database) variable to a readable database of Select queries
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void openReadableDB()
     {
         db = dbHelper.getReadableDatabase();
     }
 
+    /*
+     * FUNCTION:
+     *		openWriteableDatabase()
+     * DESCRIPTION:
+     *		Sets the db (database) variable to a writeable database of inserts and update sqlite statements
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void openWriteableDB()
     {
         db = dbHelper.getWritableDatabase();
     }
 
+    /*
+     * FUNCTION:
+     *		closeDB()
+     * DESCRIPTION:
+     *		Checks that the database is not null and closes it
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void closeDB()
     {
         // Ensure there is a database to close before attempting to close it
@@ -173,6 +266,16 @@ public class DBAdapter
         }
     }
 
+    /*
+     * FUNCTION:
+     *		closeCursor(Cursor cursor)
+     * DESCRIPTION:
+     *		Checks if the cursor is null and not already closed before closing it
+     * PARAMETERS:
+     *			Cursor cursor : the cursor that will be closed
+     * RETURNS:
+     *			N/A
+     */
     private void closeCursor(Cursor cursor)
     {
         // Ensure there is a cursor (that has not already been closed) to close before attempting to close it
