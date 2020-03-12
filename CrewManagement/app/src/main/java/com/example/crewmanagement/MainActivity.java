@@ -13,12 +13,19 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.crewmanagement.Data;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -51,11 +58,52 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            myData = new Data("admin","1234", "Alex", 20, "Febuary 4th", "boss");//creating a new data object
+            myData = getData();
+            if( myData.eName == 0) {
+
+                Byte[] image = newMember();
+                InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", image)
+                myData = new Data("admin", "1234", "Alex", 20, "Febuary 4th", "Admin", "555-555-5555", image);
+            }
         }
     }
 
+    public Byte[] newMember(){
 
+        Drawable drawable = getResources().getDrawable(R.drawable.ic_launcher_foreground);
+        Bitmap bitmap = null;
+        if (drawable instanceof BitmapDrawable) {
+            BitmapDrawable bitmapDrawable = (BitmapDrawable) drawable;
+            if (bitmapDrawable.getBitmap() != null) {
+                bitmap = bitmapDrawable.getBitmap();
+                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+                byte[] bitmapdata = stream.toByteArray();
+                Byte[] bytes = new Byte[bitmapdata.length];
+                for (int i = 0; i < bitmapdata.length; i++)
+                {
+                    bytes[i] = Byte.valueOf(bitmapdata[i]);
+                }
+                return bytes;
+
+            }
+
+        }
+        if(drawable.getIntrinsicWidth() <= 0 || drawable.getIntrinsicHeight() <= 0) {
+            bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888); // Single color bitmap will be created of 1x1 pixel
+        } else {
+            bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
+        }
+        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, stream);
+        byte[] bitmapdata = stream.toByteArray();
+        Byte[] bytes = new Byte[bitmapdata.length];
+        for (int i = 0; i < bitmapdata.length; i++)
+        {
+            bytes[i] = Byte.valueOf(bitmapdata[i]);
+        }
+        return bytes;
+    }
 
     /*
      * FUNCTION:   onClick
@@ -65,9 +113,15 @@ public class MainActivity extends AppCompatActivity {
      */
     public void onClick(android.view.View v)
     {
-        check(UserName.getText().toString(),Password.getText().toString(), myData);
-        startActivity(intent);
-        Log.i("Login","Logging in...");
+        Integer checker = check(UserName.getText().toString(),Password.getText().toString(), myData);
+        if(checker.equals(1)) {
+            startActivity(intent);
+            Log.i("Login", "Logging in...");
+        }
+        else
+        {
+            Log.i("Incorrect", "Incorrect username or password...");
+        }
     }
     /*
      * FUNCTION:   btnChangepass
@@ -75,7 +129,7 @@ public class MainActivity extends AppCompatActivity {
      * PARAMETERS: String userName, String userPassword, Data data
      * RETURNS:    void - this function returns nothing
      */
-    private void check(String userName, String userPassword, Data info){
+    private Integer check(String userName, String userPassword, Data info){
         Data newData = info;
         Integer number = 0;
         Integer location = -1;
@@ -102,8 +156,9 @@ public class MainActivity extends AppCompatActivity {
             if(admin.equals(1))
             {
                 newData.changeAdmin(1);
-                intent = new Intent(MainActivity.this, Administrator.class);
+                intent = new Intent(MainActivity.this, Navigation.class);
                 intent.putExtra("data", newData);
+                return 1;
             }
             else
             {
@@ -114,11 +169,13 @@ public class MainActivity extends AppCompatActivity {
                     intent = new Intent(MainActivity.this, ChangePassword.class);
                     intent.putExtra("location", location.intValue());
                     intent.putExtra("data", newData);
+                    return 1;
 
                 }
                 else {
-                    //intent = new Intent(MainActivity.this, (memberlistname).class);
-                    //intent.putExtra("data", newData);
+                    intent = new Intent(MainActivity.this, Navigation.class);
+                    intent.putExtra("data", newData);
+                    return 1;
                 }
             }
         }
@@ -132,6 +189,7 @@ public class MainActivity extends AppCompatActivity {
                 Login.setEnabled(false);
             }
         }
+        return 0;
     }
 }
 
