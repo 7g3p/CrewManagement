@@ -1,3 +1,12 @@
+/*
+ * FILE : DBAdapter
+ * PROJECT : PROG3150 - Assignment #2
+ * PROGRAMMER : Stephen Perrin, Alex Palmer, Alex MacCumber, David Obeda, Marissa Schmitt
+ * FIRST VERSION : 2020-03-10
+ * DESCRIPTION :
+ * The functions in this file are used to interface between the application and the database. Allowing for selecting, inserting, and updating
+ * records within the database.
+ */
 package com.example.crewmanagement;
 
 import com.example.crewmanagement.Data;
@@ -18,6 +27,11 @@ import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import android.view.ContextThemeWrapper;
 
+/*
+ * NAME:     DBAdapter
+ * PURPOSE:  The purpose of the DBAdapter class is to read and write to and from the database any relevant data.
+ *           It is the interface between the application and the database.
+ */
 public class DBAdapter
 {
     // RetCode Meanings
@@ -101,14 +115,41 @@ public class DBAdapter
     public static final String DROP_NEWSFEEDPOSTS_TABLE = "DROP TABLE IF EXISTS `NewFeedPosts`";
 
     //////////////////////////////////////////////////////////////////////////////////
+    /*
+     * NAME:     DBHelper extends SQLiteOpenHelper
+     * PURPOSE:  The purpose of the DBHelper is to open the database within the appropriate context and, should it be needed, reset/upgrade the database with default admin values
+     */
     private static class DBHelper extends SQLiteOpenHelper
     {
 
+        /*
+         * FUNCTION:
+         *		onCreate(SQLiteDatabase db)
+         * DESCRIPTION:
+         *		Sets the current context in which the database is working in, the database's name, and the version number
+         * PARAMETERS:
+         *			Context context       : The current working context
+         *          String name           : The name of the database
+         *          CursorFactory factory : To be honest I don't really know what this is as its always null :/
+         *          int version           : The version number of the database
+         * RETURNS:
+         *			N/A
+         */
         public DBHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version)
         {
             super(context, name, factory, version);
         }
 
+        /*
+         * FUNCTION:
+         *		onCreate(SQLiteDatabase db)
+         * DESCRIPTION:
+         *		Creates all tables in the database with the default admin data (***WARNING CALLING THIS RESETS THE DATABASE WITH ONLY DEFAULT VALUES***)
+         * PARAMETERS:
+         *			SQLiteDatabase db   : The database that will hold the created database
+         * RETURNS:
+         *			N/A
+         */
         @Override
         public void onCreate(SQLiteDatabase db)
         {
@@ -126,6 +167,18 @@ public class DBAdapter
             db.execSQL("INSERT INTO Users (MemberID, Username, Password, Access) VALUES (0, 'admin', '1234', 1)");
         }
 
+        /*
+         * FUNCTION:
+         *		onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
+         * DESCRIPTION:
+         *		Drops all tables in the database, updates the version number to the new version number and recalls the OnCreate method with default values (***WARNING CALLING THIS RESETS THE DATABASE WITH ONLY DEFAULT VALUES***)
+         * PARAMETERS:
+         *			SQLiteDatabase db   : The database that will be upgraded
+         *          int oldVersion      : The old version number
+         *          int newVersion      : The new version number
+         * RETURNS:
+         *			N/A
+         */
         @Override
         public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
         {
@@ -149,21 +202,61 @@ public class DBAdapter
     }
     //////////////////////////////////////////////////////////////////////////////////
 
+    /*
+     * FUNCTION:
+     *		DBAdapter(Context context)
+     * DESCRIPTION:
+     *		Sets the database helper to the current context of the activity
+     * PARAMETERS:
+     *			Context context : The current activity that is being used (usually called via "= new DBAdapter(this);")
+     * RETURNS:
+     *			N/A
+     */
     public DBAdapter (Context context)
     {
         dbHelper = new DBHelper(context, DB_NAME, null, DB_VERSION);
     }
 
+    /*
+     * FUNCTION:
+     *		openReadableDatabase()
+     * DESCRIPTION:
+     *		Sets the db (database) variable to a readable database of Select queries
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void openReadableDB()
     {
         db = dbHelper.getReadableDatabase();
     }
 
+    /*
+     * FUNCTION:
+     *		openWriteableDatabase()
+     * DESCRIPTION:
+     *		Sets the db (database) variable to a writeable database of inserts and update sqlite statements
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void openWriteableDB()
     {
         db = dbHelper.getWritableDatabase();
     }
 
+    /*
+     * FUNCTION:
+     *		closeDB()
+     * DESCRIPTION:
+     *		Checks that the database is not null and closes it
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			N/A
+     */
     private void closeDB()
     {
         // Ensure there is a database to close before attempting to close it
@@ -173,6 +266,16 @@ public class DBAdapter
         }
     }
 
+    /*
+     * FUNCTION:
+     *		closeCursor(Cursor cursor)
+     * DESCRIPTION:
+     *		Checks if the cursor is null and not already closed before closing it
+     * PARAMETERS:
+     *			Cursor cursor : the cursor that will be closed
+     * RETURNS:
+     *			N/A
+     */
     private void closeCursor(Cursor cursor)
     {
         // Ensure there is a cursor (that has not already been closed) to close before attempting to close it
@@ -256,7 +359,6 @@ public class DBAdapter
     public Data GetData()
     {
         // Variables
-        int counter = 0;
         Cursor cursor;
         Data newData = new Data();
         ArrayList<String> memberIDs = new ArrayList<String>();
@@ -303,7 +405,6 @@ public class DBAdapter
             eName.add(cursor.getString(4) + " " + cursor.getString(5));
             pAge.add(cursor.getInt(6));
             dateOfHire.add(cursor.getString(7));
-            counter++;
         }
 
         // Temp string variable for the query's argument
@@ -641,23 +742,16 @@ public class DBAdapter
      * RETURNS:
      *			int : Returns the MemberID of the found Member based on the data in the parameters else if no member is found FAILURE retCode is returned
      */
-    public int IdentifyMemberID(String name, Integer age, String doh)
+    public int IdentifyMemberID(String username)
     {
         // Variables
         int retValue = FAILURE;
         Cursor cursor;
-        String[] args = new String[4];
-
+        String[] args = new String[1];
         // Transfer the parameters to the argument array
-        args[0] = name.substring(0, name.indexOf(' '));
-        args[1] = name.substring(name.indexOf(' '), name.length());
-        args[2] = Integer.toString(age);
-        args[3] = doh;
-
+        args[3] = username;
         this.openReadableDB();
-
-        cursor = db.rawQuery("SELECT MemberID FROM Members WHERE FirstName = ? AND LastName = ? AND Age = ? AND DateOfHire = ?", args);
-
+        cursor = db.rawQuery("SELECT MemberID FROM Users WHERE Username = ?", args);
         if (cursor.getCount() == 0)
         {
             return FAILED_TO_RETRIEVE_MEMBERID;
@@ -669,10 +763,8 @@ public class DBAdapter
                 retValue = cursor.getInt(0);
             }
         }
-
         this.closeCursor(cursor);
         this.closeDB();
-
         return retValue;
     }
 
@@ -724,27 +816,72 @@ public class DBAdapter
      * DESCRIPTION:
      *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
      * PARAMETERS:
-     *          String name     : The Member's name (used in tandem with the "doh" and "age" parameters to identify the member and retrieve the memberID)
-     *          Integer age     : The Member's age (used in tandem with the "name" and "doh" parameters to identify the member and retrieve the memberID)
-     *          String doh      : The Member's DateOfHire (used in tandem with the "name" and "age" parameters to identify the member and retrieve the memberID)
+     *          String username : The Member's username (used to identify the member)
      *			String jobName  : The job's name (used to find the job's JobID)
      * RETURNS:
      *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned
      */
-    public long AssignJobToMember(String name, Integer age, String doh, String jobName)
+    public long AssignJobToMember(String username, String jobName)
     {
         // Variables
         long retValue = 0;
         ContentValues cv = new ContentValues();
+        this.openWriteableDB();
+        cv.put("MemberID", IdentifyMemberID(username));
+        cv.put("JobID", IdentifyJobID(jobName));
+        cv.put("Status", 0);
+        retValue = db.insert("JobMemberList", null, cv);
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+        this.closeDB();
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		UpdatePassword(String username, String newPassword)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String newPassword  : The Member's new Password
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdatePassword(String username, String newPassword)
+    {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
+
+        // Check that the password is valid and not malicious
+        if (newPassword.contains(" ") || newPassword.contains(",") || newPassword.contains("'"))
+        {
+            return INVALID_PASSWORD;
+        }
+        else
+        {
+            cv.put("Password", newPassword);
+        }
+
+        // Check that the username is valid (for security of database)
+        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = username;
+        }
 
         this.openWriteableDB();
 
-        cv.put("MemberID", IdentifyMemberID(name, age, doh));
-        cv.put("JobID", IdentifyJobID(jobName));
-        cv.put("Status", 0);
+        retValue = db.update("Users", cv, "Username", args);
 
-        retValue = db.insert("JobMemberList", null, cv);
-
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
         if (retValue == -1)
         {
             return FAILURE;
@@ -755,5 +892,43 @@ public class DBAdapter
         return retValue;
     }
 
+    /*
+     * FUNCTION:
+     *		RecordNewsFeedPost(String username, String timePosted, String msg)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String newPassword  : The Member's new Password
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long RecordNewsFeedPost(String username, String timePosted, String msg)
+    {
+        // Variables
+        long retValue = 0;
+        Date currDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD");
+        String dateTimePosted = currDate.toString() + "_" + timePosted;
+        ContentValues cv = new ContentValues();
+
+        // Store the values of the parameters into the contentValue variable
+        cv.put("MemberID", IdentifyMemberID(username));
+        cv.put("TimePosted", dateTimePosted);
+        cv.put("Message", msg);                 // Figured I could prevent SQL injection here with parametrized sqlite queries but I don't know how to very well and didn't want to experiment on a group assignment
+
+        this.openWriteableDB();
+
+        retValue = db.insert("NewFeedPosts", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
 }
 
