@@ -51,7 +51,7 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            myData = new Data("admin","1234", "Alex", 20, "Febuary 4th", "boss");//creating a new data object
+            myData = new Data("admin","1234", "Alex", 20, "Febuary 4th", "Administrator", null, null);//creating a new data object
         }
     }
 
