@@ -766,7 +766,7 @@ public class DBAdapter
         ContentValues cv = new ContentValues();
 
         // Check that the password is valid and not malicious
-        if (newPassword.contains(" ") || newPassword.contains(",") || newPassword.contains("'"))
+        if (newPassword.contains(" ") || newPassword.contains(",") || newPassword.contains("'") || newPassword.contains("="))
         {
             return INVALID_PASSWORD;
         }
@@ -776,7 +776,7 @@ public class DBAdapter
         }
 
         // Check that the username is valid (for security of database)
-        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        if (username.contains(" ") || username.contains("'") || username.contains(",") || username.contains("="))
         {
             return INVALID_USERNAME;
         }
@@ -790,6 +790,45 @@ public class DBAdapter
         retValue = db.update("Users", cv, "Username", args);
 
         // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		RecordNewsFeedPost(String username, String timePosted, String msg)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String newPassword  : The Member's new Password
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long RecordNewsFeedPost(String username, String timePosted, String msg)
+    {
+        // Variables
+        long retValue = 0;
+        Date currDate = Calendar.getInstance().getTime();
+        SimpleDateFormat df = new SimpleDateFormat("YYYY-MM-DD");
+        String dateTimePosted = currDate.toString() + "_" + timePosted;
+        ContentValues cv = new ContentValues();
+
+        // Store the values of the parameters into the contentValue variable
+        cv.put("MemberID", IdentifyMemberID(username));
+        cv.put("TimePosted", dateTimePosted);
+        cv.put("Message", msg);                 // Figured I could prevent SQL injection here with parametrized sqlite queries but I don't know how to very well and didn't want to experiment on a group assignment
+
+        this.openWriteableDB();
+
+        retValue = db.insert("NewFeedPosts", null, cv);
+
         if (retValue == -1)
         {
             return FAILURE;
