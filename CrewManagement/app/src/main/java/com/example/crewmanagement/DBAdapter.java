@@ -638,22 +638,19 @@ public class DBAdapter
      * RETURNS:
      *			int : Returns the MemberID of the found Member based on the data in the parameters else if no member is found FAILURE retCode is returned
      */
-    public int IdentifyMemberID(String name, Integer age, String doh)
+    public int IdentifyMemberID(String username)
     {
         // Variables
         int retValue = FAILURE;
         Cursor cursor;
-        String[] args = new String[4];
+        String[] args = new String[1];
 
         // Transfer the parameters to the argument array
-        args[0] = name.substring(0, name.indexOf(' '));
-        args[1] = name.substring(name.indexOf(' '), name.length());
-        args[2] = Integer.toString(age);
-        args[3] = doh;
+        args[3] = username;
 
         this.openReadableDB();
 
-        cursor = db.rawQuery("SELECT MemberID FROM Members WHERE FirstName = ? AND LastName = ? AND Age = ? AND DateOfHire = ?", args);
+        cursor = db.rawQuery("SELECT MemberID FROM Users WHERE Username = ?", args);
 
         if (cursor.getCount() == 0)
         {
@@ -728,7 +725,7 @@ public class DBAdapter
      * RETURNS:
      *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned
      */
-    public long AssignJobToMember(String name, Integer age, String doh, String jobName)
+    public long AssignJobToMember(String username, String jobName)
     {
         // Variables
         long retValue = 0;
@@ -736,7 +733,7 @@ public class DBAdapter
 
         this.openWriteableDB();
 
-        cv.put("MemberID", IdentifyMemberID(name, age, doh));
+        cv.put("MemberID", IdentifyMemberID(username));
         cv.put("JobID", IdentifyJobID(jobName));
         cv.put("Status", 0);
 
@@ -751,6 +748,9 @@ public class DBAdapter
 
         return retValue;
     }
+
+
+
 
 }
 
