@@ -34,6 +34,8 @@ public class Data implements Serializable {
     Integer completedJobs;// this will track how many jobs are completed
     Integer numberOfMembers; // how many members there are (including admin so when using this has a source do -1 when accessing data
     Integer Admin; // to identify if the admin is logged in 0 is a member while 1 is a admin
+    List<String> pPhone;
+    List<Byte[]> pImages;
 
 
     /*
@@ -47,7 +49,7 @@ public class Data implements Serializable {
      *		String job - represents the job title of the employee
      * RETURNS:	N/A - the constructor doesn't have a return value.
      */
-    public Data(String un, String pw, String name, Integer age, String doh, String job)
+    public Data(String un, String pw, String name, Integer age, String doh, String job, String Phone, Byte[] image)
     {
         this.username = new ArrayList<String>();//initializing the data class' username to a new array list of strings
         this.password = new ArrayList<String>();//initializing the data class' password to a new array list of strings
@@ -58,6 +60,8 @@ public class Data implements Serializable {
         this.pAssignedJob = new ArrayList<String>();//initializing the data class' assigned job to a new array list of strings
         this.jobList = new ArrayList<String>();//initializing the data class' job list to a new array list of strings
         this.jobStatus = new ArrayList<String>();//initializing the data class' job status to a new array list of strings
+        this.pPhone = new ArrayList<String>();
+        this.pImages = new ArrayList<Byte[]>();
         username.add(un);//adding the user's username to the username list
         password.add(pw);//adding the user's password to the password list
         eName.add(name);//adding the employee's name to the employee name list
@@ -65,37 +69,33 @@ public class Data implements Serializable {
         dateOfHire.add(doh);//adding the date of hire to the specified list
         pJob.add(job);//adding the job to the specified list
         pAssignedJob.add("none");//adding "none" to the list of the jobs
+        pPhone.add(Phone);
+        pImages.add(image);
         uncompletedJobs = 0;//initializing the uncompleted jobs int to zero
         completedJobs = 0;//initializing the completed jobs int to zero
         numberOfMembers = 1;//initializing the number of members to one
+
     }
 
-    /*
-     * FUNCTION:	Data
-     * DESCRIPTION:	This is a constructor for the Data class.
-     * PARAMETERS:	String un - represents the username entered by the user
-     *		String pw - represents the password entered by the user
-     *		String name - represents the name of the employee
-     *		Integer age - represents the age of the employee
-     *		String doh - represents the date of hire of the employee
-     *		String job - represents the job title of the employee
-     * RETURNS:	N/A - the constructor doesn't have a return value.
-     */
-    public Data()
+    public void changePhonenumber(String newNumber, int location)
     {
-        this.username = new ArrayList<String>();//initializing the data class' username to a new array list of strings
-        this.password = new ArrayList<String>();//initializing the data class' password to a new array list of strings
-        this.eName = new ArrayList<String>();//initializing the data class' employee name to a new array list of strings
-        this.pAge = new ArrayList<Integer>();//initializing the data class' age to a new array list of ints
-        this.pJob = new ArrayList<String>();//initializing the data class' jobs to a new array list of strings
-        this.dateOfHire = new ArrayList<String>();//initializing the data class' date of hire to a new array list of strings
-        this.pAssignedJob = new ArrayList<String>();//initializing the data class' assigned job to a new array list of strings
-        this.jobList = new ArrayList<String>();//initializing the data class' job list to a new array list of strings
-        this.jobStatus = new ArrayList<String>();//initializing the data class' job status to a new array list of strings
+        pPhone.set(location, newNumber);//changing the username of the specified employee
+    }
 
-        uncompletedJobs = 0;//initializing the uncompleted jobs int to zero
-        completedJobs = 0;//initializing the completed jobs int to zero
-        numberOfMembers = 1;//initializing the number of members to one
+    public void changeImage(Byte newImage[], int location)
+    {
+        pImages.set(location, newImage);//changing the username of the specified employee
+    }
+
+    public String getPhonenumber(int location)
+    {
+        String info = pPhone.get(location);//retrieving the specified job
+        return info;//returning the job
+    }
+    public Byte[] getImage(int location)
+    {
+        Byte[] info = pImages.get(location);//retrieving the specified job
+        return info;//returning the job
     }
 
 
