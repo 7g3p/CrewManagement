@@ -63,7 +63,13 @@ public class MainActivity extends AppCompatActivity {
             myData = dbAdapter.GetData();
             if( myData.eName.contains("0")) {
                 Byte[] image = newMember();
-                dbAdapter.InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", image);
+                int j=0;
+                byte[] bpicture = new byte[image.length];
+                for(Byte b: bpicture)
+                {
+                    bpicture[j++] = b.byteValue();
+                }
+                dbAdapter.InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", bpicture);
                 myData = new Data("admin", "1234", "Alex", 20, "Febuary 4th", "Admin", "555-555-5555", image);
             }
         }
