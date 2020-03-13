@@ -827,8 +827,21 @@ public class DBAdapter
         long retValue = 0;
         ContentValues cv = new ContentValues();
         this.openWriteableDB();
+
+        // Check that the member was identified
+        if (IdentifyMemberID(username) == FAILED_TO_RETRIEVE_MEMBERID)
+        {
+            return FAILED_TO_RETRIEVE_MEMBERID;
+        }
         cv.put("MemberID", IdentifyMemberID(username));
+
+        // Check that the job was Identified
+        if (IdentifyJobID(jobName) == FAILED_TO_RETRIEVE_JOBID)
+        {
+            return FAILED_TO_RETRIEVE_JOBID;
+        }
         cv.put("JobID", IdentifyJobID(jobName));
+
         cv.put("Status", 0);
         retValue = db.insert("JobMemberList", null, cv);
         if (retValue == -1)
@@ -913,6 +926,11 @@ public class DBAdapter
         ContentValues cv = new ContentValues();
 
         // Store the values of the parameters into the contentValue variable
+        // Check that the member was identified
+        if (IdentifyMemberID(username) == FAILED_TO_RETRIEVE_MEMBERID)
+        {
+            return FAILED_TO_RETRIEVE_MEMBERID;
+        }
         cv.put("MemberID", IdentifyMemberID(username));
         cv.put("TimePosted", dateTimePosted);
         cv.put("Message", msg);                 // Figured I could prevent SQL injection here with parametrized sqlite queries but I don't know how to very well and didn't want to experiment on a group assignment
@@ -920,6 +938,108 @@ public class DBAdapter
         this.openWriteableDB();
 
         retValue = db.insert("NewFeedPosts", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		GetTotalNumberOfTasks()
+     * DESCRIPTION:
+     *		Find the total number of tasks in the database and returns the count
+     * PARAMETERS:
+     *          N/A
+     * RETURNS:
+     *			int : Returns the total count of the total number of tasks in the database (This number can double as the new TaskID if 1 is added to it)
+     */
+    public int GetTotalNumberOfTasks()
+    {
+        // Variables
+        int retValue = 0;
+        Cursor cursor;
+
+        this.openReadableDB();
+
+        // Find all tasks with a SELECT all query
+        cursor = db.rawQuery("SELECT * FROM Tasks", null);
+
+        // Get number of tasks count
+        retValue = cursor.getCount();
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		AddNewTask(String taskDescription, String username, String jobName, Integer isCompleted)
+     * DESCRIPTION:
+     *		Takes data from the parameter list and creates a new task
+     * PARAMETERS:
+     *          String taskDescription  : The newTask's description
+     *          String username         : The Member's username (used to identify the member)
+     *			String jobName          : The associated job's name (used to identify the job)
+     *			Integer isCompleted     : The completion status of the task
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long InsertNewTask(String taskDescription, String username, String jobName, Integer isCompleted)
+    {
+        // Variables
+        long retValue = 0;
+        int id = 0;
+        ContentValues cv = new ContentValues();
+
+        cv.put("TaskID", GetTotalNumberOfTasks() + 1);
+
+        // Check that the member was identified
+        if (IdentifyMemberID(username) == FAILED_TO_RETRIEVE_MEMBERID)
+        {
+            return FAILED_TO_RETRIEVE_MEMBERID;
+        }
+        cv.put("MemberID", IdentifyMemberID(username));
+
+        // Check that the job was Identified
+        if (IdentifyJobID(jobName) == FAILED_TO_RETRIEVE_JOBID)
+        {
+            return FAILED_TO_RETRIEVE_JOBID;
+        }
+        cv.put("JobID", IdentifyJobID(jobName));
+
+        cv.put("Description", taskDescription);
+
+        // Check if the result is not valid and set to default 0 (incomplete)
+        if (isCompleted == null || !(isCompleted >= 0 && isCompleted <= 1))
+        {
+            isCompleted = 0;
+        }
+        cv.put("IsCompleted", isCompleted);
+
+        this.openWriteableDB();
+
+        // Insert into the Tasks table
+        retValue = db.insert("Tasks", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        // Clear the ContentValues and load with the new Task's ID and IsCompleted status
+        cv = new ContentValues();
+        cv.put("TaskID", GetTotalNumberOfTasks() + 1);
+        cv.put("IsCompleted", isCompleted);
+
+        // Insert into the TaskList table
+        retValue = db.insert("TaskList", null, cv);
 
         if (retValue == -1)
         {
