@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+        <item android:id="@+id/menu_activity1"
+            android:title="@string/menuOption1"/>
+        <item android:id="@+id/menu_activity4"
+            android:title="@string/menuOption4"/>
+        <item android:id="@+id/menu_activity5"
+            android:title="@string/menuOption5"/>
+        <item android:id="@+id/menu_activity6"
+            android:title="@string/menuOption6"/>
+</menu>
