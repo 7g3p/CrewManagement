@@ -1050,5 +1050,214 @@ public class DBAdapter
 
         return retValue;
     }
+
+    /*
+     * FUNCTION:
+     *		UpdateName(String username, String fName, String lName)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and updates the appropriate Member's first and last name
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String fName        : The Member's new FirstName
+     *			String lName        : The Member's new LastName
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdateName(String username, String fName, String lName)
+    {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
+
+        // Check that the fName is valid and not malicious
+        if (fName.contains(" ") || fName.contains(",") || fName.contains("'"))
+        {
+            return INVALID_NAME;
+        }
+        else
+        {
+            cv.put("FirstName", fName);
+        }
+
+        // Check that the lName is valid and not malicious
+        if (lName.contains(" ") || lName.contains(",") || lName.contains("'"))
+        {
+            return INVALID_NAME;
+        }
+        else
+        {
+            cv.put("LastName", lName);
+        }
+
+        // Check that the oldUsername is valid (for security of database)
+        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = Integer.toString(IdentifyMemberID(username));
+        }
+
+        this.openWriteableDB();
+
+        retValue = db.update("Members", cv, "MemberID", args);
+
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		UpdateAge(String username, Integer newAge)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and updates the appropriate Member's age
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			Integer newAge      : The Member's new Age
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdateAge(String username, Integer newAge)
+    {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
+
+
+        // Check that the lName is valid and not malicious
+        cv.put("Age", newAge);
+
+        // Check that the oldUsername is valid (for security of database)
+        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = Integer.toString(IdentifyMemberID(username));
+        }
+
+        this.openWriteableDB();
+
+        retValue = db.update("Members", cv, "MemberID", args);
+
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		UpdatePhone(String username, String phone)
+     * DESCRIPTION:
+     *		Takes Data from the parameters and updates the appropriate Member's phone number
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *			String lName        : The Member's new phone number
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdatePhone(String username, String phone)
+    {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
+
+
+        // Check that the lName is valid and not malicious
+        cv.put("Phone", phone);
+
+        // Check that the oldUsername is valid (for security of database)
+        if (username.contains(" ") || username.contains("'") || username.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = Integer.toString(IdentifyMemberID(username));
+        }
+
+        this.openWriteableDB();
+
+        retValue = db.update("Members", cv, "MemberID", args);
+
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *        UpdateUsername(String oldUsername, String newUsername)
+     * DESCRIPTION:
+     *        Takes Data from the parameters and inserts the connection between the Member and the Job in the JobMemberList table
+     * PARAMETERS:
+     *          String username     : The Member's username (used to identify the member)
+     *            String newPassword  : The Member's new Password
+     * RETURNS:
+     *            int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long UpdateUsername(String oldUsername, String newUsername) {
+        // Variables
+        long retValue = 0;
+        String[] args = new String[1];
+        ContentValues cv = new ContentValues();
+
+        // Check that the newUsername is valid and not malicious
+        if (newUsername.contains(" ") || newUsername.contains(",") || newUsername.contains("'"))
+        {
+            return INVALID_PASSWORD;
+        }
+        else
+        {
+            cv.put("Username", newUsername);
+        }
+
+        // Check that the oldUsername is valid (for security of database)
+        if (oldUsername.contains(" ") || oldUsername.contains("'") || oldUsername.contains(","))
+        {
+            return INVALID_USERNAME;
+        }
+        else
+        {
+            args[0] = oldUsername;
+        }
+
+        this.openWriteableDB();
+
+        retValue = db.update("Users", cv, "Username", args);
+
+        // Check if the sqlite statement did NOT successfully execute and return FAILURE value else do nothing
+        if (retValue == -1) {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
 }
 

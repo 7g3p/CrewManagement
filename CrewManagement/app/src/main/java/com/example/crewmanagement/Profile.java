@@ -37,7 +37,7 @@ public class Profile extends AppCompatActivity {
     Button bAge;
     Button bPhone;
     Data info;
-    SQLiteDatabase db;
+    DBAdapter db;
     String fName;
     String lName;
 
@@ -100,8 +100,7 @@ public class Profile extends AppCompatActivity {
                     }
                     else
                     {
-                        db = DBHelper.openWriteableDB();
-                        db.rawQuery("UPDATE FirstName = ?, LastName = ? FROM Members WHERE MemberId = ? ", args);
+                        db.UpdateName(null, fName, lName);
                     }
                 }
                 else
@@ -109,40 +108,20 @@ public class Profile extends AppCompatActivity {
                     String[] args = new String[3];
                     args[0] = fName;
                     args[1] = lName;
-                    args[2] = info.user;
-                    args[2] = info.user;
-                    db = DBHelper.openWriteableDB();
-                    db.rawQuery("UPDATE FirstName = ?, LastName = ? FROM Members WHERE MemberId = ? ", args);
-                    db.close();
-
+                    db.UpdateName(null, fName, lName);
                 }
-
-
-
             }
         });
         bUsername.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] args = new String[2];
-                args[0] = eUsername.getText().toString();
-                args[1] = info.user;
-                db = DBHelper.openWriteableDB();
-                db.rawQuery("UPDATE Username = ? FROM Users WHERE MemberId = ? ", args);
-                db.close();
-
+                db.UpdateUsername(info.username.toString(), eUsername.getText().toString());
             }
         });
         bPassword.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] args = new String[2];
-                args[0] = ePassword.getText().toString();
-                args[1] = info.user;
-                db = DBHelper.openWriteableDB();
-                db.rawQuery("UPDATE Password = ? FROM Users WHERE MemberId = ? ", args);
-                db.close();
-
+                db.UpdatePassword(eName.getText().toString(), ePassword.getText().toString());
             }
         });
         bAge.setOnClickListener(new View.OnClickListener() {
@@ -156,24 +135,14 @@ public class Profile extends AppCompatActivity {
                 else
                 {
                     Integer[] args = new Integer[2];
-                    args[0] = age;
-                    args[1] = info.user;
-                    db = DBHelper.openWriteableDB();
-                    db.rawQuery("UPDATE Age = ? FROM Members WHERE MemberId = ? ", args);
-                    db.close();
+                    db.UpdateAge(info.username.toString(), age);
                 }
-
             }
         });
         bPhone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                String[] args = new String[2];
-                args[0] = ePhone.getText().toString();
-                args[1] = info.user;
-                db = DBHelper.openWriteableDB();
-                db.rawQuery("UPDATE Phone = ? FROM Members WHERE MemberId = ? ", args);
-                db.close();
+                db.UpdatePhone(info.username.toString(), ePhone.getText().toString());
             }
         });
 
