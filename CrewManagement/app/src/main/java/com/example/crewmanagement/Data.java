@@ -83,6 +83,31 @@ public class Data implements Serializable {
 
     }
 
+    /*
+     * FUNCTION:    Data
+     * DESCRIPTION:    This is a constructor for the Data class.
+     * PARAMETERS:    N/A
+     * RETURNS:    N/A - the constructor doesn't have a return value.
+     */
+    public Data()
+    {
+        this.username = new ArrayList<String>();//initializing the data class' username to a new array list of strings
+        this.password = new ArrayList<String>();//initializing the data class' password to a new array list of strings
+        this.eName = new ArrayList<String>();//initializing the data class' employee name to a new array list of strings
+        this.pAge = new ArrayList<Integer>();//initializing the data class' age to a new array list of ints
+        this.pJob = new ArrayList<String>();//initializing the data class' jobs to a new array list of strings
+        this.dateOfHire = new ArrayList<String>();//initializing the data class' date of hire to a new array list of strings
+        this.pAssignedJob = new ArrayList<String>();//initializing the data class' assigned job to a new array list of strings
+        this.jobList = new ArrayList<String>();//initializing the data class' job list to a new array list of strings
+        this.jobStatus = new ArrayList<String>();//initializing the data class' job status to a new array list of strings
+        this.pPhone = new ArrayList<String>();
+        this.pImages = new ArrayList<Byte[]>();
+
+        uncompletedJobs = 0;//initializing the uncompleted jobs int to zero
+        completedJobs = 0;//initializing the completed jobs int to zero
+        numberOfMembers = 1;//initializing the number of members to one
+    }
+
 
     public void changePhonenumber(String newNumber, int location)
     {

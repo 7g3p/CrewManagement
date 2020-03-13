@@ -35,6 +35,8 @@ public class MainActivity extends AppCompatActivity {
     private Button Login;
     private Data myData;
     private Integer counter = 5;
+    private DBAdapter dbAdapter;
+
     Intent intent;
     /*
      * FUNCTION:   onCreate
@@ -58,10 +60,10 @@ public class MainActivity extends AppCompatActivity {
         }
         else
         {
-            myData = getData();
-            if( myData.eName == 0) {
+            myData = dbAdapter.GetData();
+            if( myData.eName.contains("0")) {
                 Byte[] image = newMember();
-                InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", image)
+                dbAdapter.InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", image);
                 myData = new Data("admin", "1234", "Alex", 20, "Febuary 4th", "Admin", "555-555-5555", image);
             }
         }

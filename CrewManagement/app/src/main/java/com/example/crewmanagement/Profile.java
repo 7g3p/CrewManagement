@@ -38,6 +38,9 @@ public class Profile extends AppCompatActivity {
     Button bPhone;
     Data info;
     SQLiteDatabase db;
+    String fName;
+    String lName;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -79,18 +82,18 @@ public class Profile extends AppCompatActivity {
         Drawable drawable = new BitmapDrawable(getResources(), BitmapFactory.decodeByteArray(bpicture, 0, bpicture.length));
         iPhoto.setImageDrawable(drawable);
         ContentValues cv = new ContentValues();
-        String fName = new String();
-        String lName = new String();
+        fName = new String();
+        lName = new String();
         bName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (name.contains("1") || name.contains("2") || name.contains("3") || name.contains("4") || name.contains("5") || name.contains("6") || name.contains("7") || name.contains("8") || name.contains("9") || name.contains("0"))
+                if (eName.getText().toString().contains("1") || eName.getText().toString().contains("2") || eName.getText().toString().contains("3") || eName.getText().toString().contains("4") || eName.getText().toString().contains("5") || eName.getText().toString().contains("6") || eName.getText().toString().contains("7") || eName.getText().toString().contains("8") || eName.getText().toString().contains("9") || eName.getText().toString().contains("0"))
                 {
                 }
-                else if (name.contains(" "))
+                else if (eName.getText().toString().contains(" "))
                 {
-                    fName = eName.getText().toString().substring(0, name.indexOf(' '));
-                    lName = eName.getText().toString().substring(name.indexOf(' ') + 1, name.length());
+                    fName = eName.getText().toString().substring(0, eName.getText().toString().indexOf(' '));
+                    lName = eName.getText().toString().substring(eName.getText().toString().indexOf(' ') + 1, eName.length());
 
                     if (fName.contains(" ") || lName.contains(" "))
                     {
@@ -145,7 +148,7 @@ public class Profile extends AppCompatActivity {
         bAge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Integer age = Integer.arseInt(eAge.getText().toString());
+                Integer age = Integer.parseInt(eAge.getText().toString());
                 if (age <= 15 || age >= 80)
                 {
 
