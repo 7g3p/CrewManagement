@@ -26,4 +26,10 @@
     <string name="job_hint">Enter Job to assign</string>
     <string name="employee_hint">Enter Employee for Job</string>
     <string name="lblAppIntro">Welcome to the Crew Management Application. </string>
+    <string name="admin">Administrator Screen</string>
+    <string name="job">Job Screen</string>
+    <string name="member">Members Screen</string>
+    <string name="progress">Progress Screen</string>
+    <string name="news_feed">NewsFeed Screen</string>
+    <string name="profile">Profile Screen</string>
 </resources>
