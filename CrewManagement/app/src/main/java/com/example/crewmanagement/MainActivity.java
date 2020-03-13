@@ -60,7 +60,6 @@ public class MainActivity extends AppCompatActivity {
         {
             myData = getData();
             if( myData.eName == 0) {
-
                 Byte[] image = newMember();
                 InsertNewMember("admin", "1234", "Alex", 20, "Febuary 4th", 1, "519-555-5555", image)
                 myData = new Data("admin", "1234", "Alex", 20, "Febuary 4th", "Admin", "555-555-5555", image);
@@ -156,6 +155,7 @@ public class MainActivity extends AppCompatActivity {
             if(admin.equals(1))
             {
                 newData.changeAdmin(1);
+                newData.user = location;
                 intent = new Intent(MainActivity.this, Navigation.class);
                 intent.putExtra("data", newData);
                 return 1;
@@ -163,6 +163,7 @@ public class MainActivity extends AppCompatActivity {
             else
             {
                 newData.changeAdmin(0);
+                newData.user = location;
                 //if username is the same as password
                 if(userName.equals(userPassword))
                 {
