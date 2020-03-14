@@ -12,6 +12,7 @@ package com.example.crewmanagement;
 import androidx.fragment.app.Fragment;
 
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -21,6 +22,7 @@ import android.widget.ExpandableListAdapter;
 import android.widget.ExpandableListView;
 import android.widget.Toast;
 
+import java.text.StringCharacterIterator;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +71,7 @@ public class Members_Fragment extends Fragment {
         data = (Data)intent.getExtras().getSerializable("data");
         // Set list of members according to data
         listView = (ExpandableListView) membersView.findViewById(R.id.MembersList);
+        String tempPhoneNum = "519-123-4567";
         // Variables
         List<String> memberDetails = new ArrayList<>(); // Local list of member's details
         HashMap<String, List<String>> details = new HashMap<>();    // Local hashmap of members' details
@@ -84,7 +87,7 @@ public class Members_Fragment extends Fragment {
             memberDetails.add("Job: \t\t\t" + data.pJob.get(i));
             memberDetails.add("Assigned Job: \t" + data.pAssignedJob.get(i));
             memberDetails.add("Date of Hire: \t" + data.dateOfHire.get(i));
-
+            memberDetails.add("Phone Number:\t" + tempPhoneNum);
 
             // Get members' name
             details.put(data.eName.get(i), memberDetails);
@@ -153,6 +156,21 @@ public class Members_Fragment extends Fragment {
             @Override
             public boolean onChildClick(ExpandableListView parent, View v, int groupPosition, int childPosition, long id)
             {
+                //retrieving the title of the information clicked on by the user (job, name, etc)
+                String tempCheck = listDetails.get( membersNames.get(groupPosition)).get(childPosition).toString().substring(0,12);
+                //checking if the string is equal to phone number
+                if(tempCheck.compareTo("Phone Number") == 0)
+                {
+                    //getting the phone number and storing it within a string
+                    String tempPhone = listDetails.get( membersNames.get(groupPosition)).get(childPosition).toString().substring(14);
+                    //appending the tel: indicator to the phone number and placing it within a Uri
+                    Uri viewUri = Uri.parse("tel:" + tempPhone);
+                    //creating a new intent to make an action_dial
+                    Intent callIntent = new Intent(Intent.ACTION_DIAL, viewUri);
+                    Log.i("Members Fragment", "Dialing the specified member's number.");
+                    //starting the dial activity
+                    startActivity(callIntent);
+                }
                 Toast.makeText(getActivity(). getApplicationContext(),membersNames.get(groupPosition) + "'s " + listDetails.get( membersNames.get(groupPosition)).get(childPosition), Toast.LENGTH_SHORT).show();
                 return false;
             }
