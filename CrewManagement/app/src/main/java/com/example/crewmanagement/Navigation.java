@@ -36,6 +36,8 @@ public class Navigation extends AppCompatActivity {
     Button but_Newsfeed;
     Button but_Profile;
     Data info;
+    DBAdapter adapter;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,9 +55,8 @@ public class Navigation extends AppCompatActivity {
             info = (Data)data.getSerializable("data");
         }
         else {
-            // info = getData();
-            info = new Data("admin","1234", "Alex", 20, "Febuary 4th", "boss", "519-555-5555", newMember());//creating a new data object
-
+            adapter = new DBAdapter(this);
+            info = adapter.GetData();
         }
         but_Admin.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -100,9 +101,9 @@ public class Navigation extends AppCompatActivity {
         but_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(com.example.crewmanagement.Navigation.this, Profile.class);
-                //intent.putExtra("data", info);
-                //startActivity(intent);
+                Intent intent = new Intent(com.example.crewmanagement.Navigation.this, Profile.class);
+                intent.putExtra("data", info);
+                startActivity(intent);
             }
         });
         Integer ID = getIntent().getIntExtra("ID", 0);

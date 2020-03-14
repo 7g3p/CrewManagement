@@ -1,262 +1,205 @@
-/*
- * FILE:              NewJob.Java
- * PROJECT:          CrewManagement
- * PROGRAMMER:       Alex MacCumber
- * OTHER MEMBERS:    Alex Palmer, David Obeda, Stephen Perrin, Marissa Schmitt
- * FIRST VERSION:    February 6th, 2020
- * DESCRIPTION:      This file describes the functionality of the Newjob screen. This screen adds
- *                   new jobs to the data class
- * External Resources: Utilized as a guide to populate the list views for jobs and employees https://windrealm.org/tutorials/android/android-listview.php
- */
 package com.example.crewmanagement;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.View;
-import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.EditText;
 import android.widget.ListView;
-import android.widget.SearchView;
-import android.widget.Spinner;
 import android.widget.Toast;
 
-import java.util.ArrayList;
+import com.example.crewmanagement.ui.jobmanagement.fragment_AssignTaskToJob;
+import com.example.crewmanagement.ui.jobmanagement.fragment_CreateJob;
+
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.AppCompatActivity;
+
+import com.example.crewmanagement.ui.jobmanagement.SectionsPagerAdapter;
+import com.example.crewmanagement.ui.jobmanagement.fragment_CreateTask;
+import com.google.android.material.tabs.TabLayout;
+
 import java.util.List;
 
-public class JobAssignment extends AppCompatActivity {
+public class JobAssignment extends AppCompatActivity
+    implements  fragment_CreateJob.MyJobListener,
+                fragment_CreateTask.MyTaskListener,
+                fragment_AssignTaskToJob.MyAddTaskListener {
 
-    EditText jobInput;
-    EditText employeeInput;
-    ListView jobList;
-    ListView employeeList;
-    Button AssignJob;
-    Button CreateJob;
+    private final String job = "J";
+    private final String task = "T";
+    private final String taskToJob = "TJ";
+    private final String memberToJob = "MJ";
+    private final String memberToTask = "MT";
 
-    ArrayList<String> listOfJobs;
-    ArrayList<String> listOfEmployees;
+    private DBAdapter dbAdapter;
+    private Data data;
 
-    String job;
-    String name;
+    private fragment_CreateJob.MyJobListener mjl = null;
+    private fragment_CreateTask.MyTaskListener mtl = null;
 
-    ArrayAdapter<String> jobAdapter;
-    ArrayAdapter<String> employeeAdapter;
+    private Button btn_CreateJob = null;
 
-    Spinner sMenu = null;//the menu dropdown
+    private ListView jobList;
+    private ListView employeeList;
 
-    Data data;
-    /*
-     * FUNCTION:	onCreate
-     * DESCRIPTION:	creates the NewJob
-     * PARAMETERS:	Bundle savedInstanceState
-     * RETURNS:	void - this function returns nothing
-     */
+    private Integer numJobs = 0;
+    private Integer numMembers = 0;
+
+    private String jobName;
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_job_assignment);
-        AssignJob = (Button)findViewById(R.id.btnAssignJob);
-        CreateJob = (Button)findViewById(R.id.btnCreateJob);
-        sMenu = (Spinner)findViewById(R.id.jobAssignMenu);//retrieving the view by specifying its id and casting it as a spinner
-        ArrayList<String> MenuItems = new ArrayList<String>();//creating an array list
-        Intent intent = getIntent();
+        SectionsPagerAdapter sectionsPagerAdapter = new SectionsPagerAdapter(this, getSupportFragmentManager());
+        ViewPager viewPager = findViewById(R.id.view_pager);
+        viewPager.setAdapter(sectionsPagerAdapter);
+        TabLayout tabs = findViewById(R.id.tabs);
+        tabs.setupWithViewPager(viewPager);
+        Intent intent = new Intent();
         Bundle info = intent.getExtras();
-        data = (Data)info.getSerializable("data");
-        Integer count = 0;
-
-        listOfJobs = new ArrayList<>();
-        listOfEmployees = new ArrayList<>();
-
-        data = (Data) info.getSerializable("data");//retrieving the data and casting it as a Data object
-
-        setTitle("Job Assignment");
-
-        // Find the ListView resources for jobs and employees to be displayed in
-        jobList = (ListView) findViewById(R.id.listView_Jobs);
-        employeeList = (ListView) findViewById(R.id.listView_Employees);
-
-        Integer numMembers = data.getNumberOfMembers().intValue();
-
-        while(count.intValue() < numMembers)
+        if(info != null)//ensuring that the bundle isn't null
         {
-            job = data.getJob(count);
-            name = data.getName(count);
-
-            listOfJobs.add(job);
-            listOfEmployees.add(name);
-
-            count++;
+            data = (Data)info.getSerializable("data");
         }
-
-        // Create two adapters
-        jobAdapter = new ArrayAdapter<String>(this, R.layout.list_view_row_layout, listOfJobs);
-        employeeAdapter = new ArrayAdapter<String>(this, R.layout.list_view_row_layout, listOfEmployees);
-
-        // Add some default jobs and employees
-        jobAdapter.add("Lumber Yard");
-        jobAdapter.add("Sweeper");
-        jobAdapter.add("Crane Operator");
-        jobAdapter.add("Supervisor");
-        jobAdapter.add("Sign Holder");
-        jobAdapter.add("Human Resources");
-
-        employeeAdapter.add("Chris");
-        employeeAdapter.add("Joelle");
-        employeeAdapter.add("Valerie");
-        employeeAdapter.add("Logan");
-
-        // Set adapters to each list view
-        jobList.setAdapter(jobAdapter);
-        employeeList.setAdapter(employeeAdapter);
-
-        //Adding items to menu for navigation
-        MenuItems.add("Administration Screen");//adding Administration Screen to the menu
-        MenuItems.add("Members Screen");//adding Members Screen to the menu
-        MenuItems.add("Progress Screen");//adding Job Assignment Screen to the menu
-        MenuItems.add("News Feed Screen");//adding News Feed Screen to the menu
-        MenuItems.add("Log out");//adding log out to the menu
-
-        //putting the arrays into each adapter and put the adapter into the spinners
-        ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,MenuItems);
-        mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sMenu.setAdapter(mAdapter);
-
-        sMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            /*
-             * FUNCTION:	onItemSelected
-             * DESCRIPTION:	Whenever an item is selected
-             * PARAMETERS:	AdapterView<?> parent, View view, int position, long id
-             * RETURNS:	void - this function returns nothing
-             */
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                if(position >= 0)//ensuring the user didn't select the screen they're currently on
-                {
-                    if(position == 0)//seeing if the user chose the first option
-                    {
-                        //creating a new intent for the admin screen
-                        Intent intent = new Intent(JobAssignment.this, Administrator.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", data);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to administrator screen.");
-                    }
-                    else if(position == 1)//seeing if the user chose the second option
-                    {
-                        //creating a new intent for the members screen
-                        Intent intent = new Intent(JobAssignment.this, MembersScreen.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", data);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to members screen.");
-                    }
-                    else if(position == 2)//seeing if the user chose the second option
-                    {
-                        //creating a new intent for the progress screen
-                        Intent intent = new Intent(JobAssignment.this, ProgressScreen.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", data);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to progress screen.");
-                    }
-                    else if(position == 3)//seeing if the user chose the third option
-                    {
-                        //creating a new intent for the job assignment screen
-                        Intent intent = new Intent(JobAssignment.this, NewsFeed.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", data);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to news feed screen.");
-                    }
-                    else if(position == 4)//seeing if the user chose the fourth option
-                    {
-                        //creating a new intent for the login screen
-                        Intent intent = new Intent (JobAssignment.this, MainActivity.class);
-                        //putting the Data object into the extras
-                        intent.putExtra("data", data);
-                        //starting the new activity
-                        startActivity(intent);
-                        Log.i("Admin","Going to login screen.");
-                    }
-                }
-
-            }
-            /*
-             * FUNCTION:	onNothingSelected
-             * DESCRIPTION:	Whenever an item is not selected
-             * PARAMETERS:	AdapterView<?> parent
-             * RETURNS:	void - this function returns nothing
-             */
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        else
+        {
+            dbAdapter = new DBAdapter(this);
+            data = dbAdapter.GetData();
+        }
+        btn_CreateJob = findViewById(R.id.btnNewJob);
+        numJobs = data.jobList.size();
+        numMembers = data.numberOfMembers;
     }
 
-    /*
-     * FUNCTION:	newJob
-     * DESCRIPTION:	When the button to create a new job in the list is pressed
-     * PARAMETERS:	android.View.view v
-     * RETURNS:	void - this function returns nothing
+     /*
+     * FUNCTION:
+     *		CreateJob()
+     * DESCRIPTION:
+     *		Uses the DBAdapter class to insert a new job into the database using the user provided
+     *      data from the Create Job fragment
+     * PARAMETERS:
+     *			Bundle args : Contains the data entered by the user on the fragment screen
+     * RETURNS:
+     *			VOID
      */
-    public void newJob(android.view.View v)
+    public void CreateJob(Bundle args)
     {
-        if (jobInput.getText().toString().equals("")) {
-            jobInput.setText("None");
-        }
-        else if (!listOfJobs.contains(jobInput.getText().toString()))
+        long retcode = 0;
+        retcode = dbAdapter.InsertNewJob(args.getString("jName"), args.getString("jDate"), args.getInt("jDuration"), args.getInt("jActual"), args.getInt("jStatus"));
+        if (retcode >= 0)
         {
-            // List of jobs does not contain the entered job
-            // We will create it
-            data.addJob(jobInput.getText().toString());
-            Intent intent = new Intent(JobAssignment.this, Administrator.class);
-            intent.putExtra("data", data);
-            startActivity(intent);
+            // Insertion of new job was successful
+            Context context = getApplicationContext();
+            CharSequence toastMsg = "Job WAS Created!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.i("CreateJob","Job Creation Successful");
+        }
+        else
+        {
+            // Insertion failed
+            Context context = getApplicationContext();
+            CharSequence toastMsg = "Job NOT created";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.e("CreateJob","Job Creation failed. Retcode was "+ retcode);
+        }
+    }
+
+
+
+    /*
+     * FUNCTION:
+     *		getData()
+     * DESCRIPTION:
+     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			Data : Returns a populated Data class object with ALL database data
+     */
+    public void CreateTask(Bundle args)
+    {
+        //TODO Switch Statement For if a job was selected on create task screen or not
+
+        long retcode = -1;
+        retcode = dbAdapter.InsertNewTask(args.getString("tDescription"), null);
+        if (retcode >= 0)
+        {
+            // Insertion of new task was successful
+            Context context = getApplicationContext();
+            CharSequence toastMsg = "Task was created!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.i("CreateJob","Task Creation Successful");
+        }
+        else
+        {
+            // Insertion failed
+            Context context = getApplicationContext();
+            CharSequence toastMsg = "Task was not created!";
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.e("CreateTask","Task Creation failed with retcode "+ retcode);
         }
     }
 
     /*
-     * FUNCTION:	assignJob
-     * DESCRIPTION:	When the button to assign a new job is pressed, the job in the input field is
-     *              assigned to is assigned to the employee in the employee input field
-     * PARAMETERS:	android.View.view v
-     * RETURNS:	void - this function returns nothing
+     * FUNCTION:
+     *		getData()
+     * DESCRIPTION:
+     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			Data : Returns a populated Data class object with ALL database data
      */
-    public void assignJob(android.view.View v)
+    public void TaskToJob(Bundle args)
     {
-        if (jobInput.getText().toString().equals("") || employeeInput.getText().toString().equals(""))
-        {
-            // One of the fields was left blank.  No job assigned
-        }
-        else if (listOfJobs.contains((jobInput.getText().toString())))
-        {
-            // Both fields have data, job assigned
-            data.pAssignedJob.add(listOfEmployees.indexOf(employeeInput.getText().toString()), jobInput.getText().toString());
-            Intent intent = new Intent(JobAssignment.this, Administrator.class);
-            intent.putExtra("data", data);
-            startActivity(intent);
-        }
-        else if(!listOfJobs.contains(jobInput.getText().toString()))
-        {
-            // Job entered does not exist. We will create it before assigning it
-            newJob(v);
-            assignJob(v);
-        }
+
+    }
+
+    /*
+     * FUNCTION:
+     *		getData()
+     * DESCRIPTION:
+     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			Data : Returns a populated Data class object with ALL database data
+     */
+    public void MemberToJob(Bundle args)
+    {
+
+    }
+
+    /*
+     * FUNCTION:
+     *		getData()
+     * DESCRIPTION:
+     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     * PARAMETERS:
+     *			N/A
+     * RETURNS:
+     *			Data : Returns a populated Data class object with ALL database data
+     */
+    public void MemberToTask(Bundle args)
+    {
+
     }
 
 
+    public void onClick()
+    {
 
-
-
+    }
 }

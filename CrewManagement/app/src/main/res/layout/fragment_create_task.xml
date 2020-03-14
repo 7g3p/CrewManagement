@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/createTaskLayout"
+    tools:context=".ui.jobmanagement.fragment_CreateTask">
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/btnNewTask"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="45dp"
+            android:text="@string/create_Task"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/txtTaskDescription"
+            app:layout_constraintVertical_bias="0.060000002" />
+
+        <Button
+            android:id="@+id/btnClearTaskForm"
+            android:layout_width="150dp"
+            android:layout_height="wrap_content"
+            android:layout_marginEnd="44dp"
+            android:text="@string/Clear_Form"
+            android:textAlignment="center"
+            app:layout_constraintBottom_toBottomOf="@+id/btnNewTask"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintTop_toTopOf="@+id/btnNewTask"
+            app:layout_constraintVertical_bias="0.17000002" />
+
+        <EditText
+            android:id="@+id/txtTaskDescription"
+            android:layout_width="376dp"
+            android:layout_height="116dp"
+            android:ems="10"
+            android:hint="@string/task_hint_creation"
+            android:importantForAutofill="no"
+            android:inputType="textPersonName"
+            android:maxLength="37"
+            android:maxLines="1"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/spnr_jobNames"
+            app:layout_constraintVertical_bias="0.52" />
+
+        <Spinner
+            android:id="@+id/spnr_jobNames"
+            android:layout_width="409dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="1dp"
+            android:layout_marginEnd="1dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="0.0" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</FrameLayout>

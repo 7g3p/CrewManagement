@@ -80,12 +80,12 @@ public class DBAdapter
             " `ActualJobDuration` INTEGER NOT NULL DEFAULT 0, " +
             " `IsCompleted` INTEGER NOT NULL DEFAULT 0 CHECK(IsCompleted >= 0 AND IsCompleted <= 1)" +
             ")";
-    public static final String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS `Tasks` (" +
-            " `TaskID` INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
-            " `JobID` INTEGER NOT NULL," +
-            " `MemberID` INTEGER," +
-            " `Description` TEXT NOT NULL DEFAULT 'N/A'," +
-            " `IsCompleted`INTEGER NOT NULL DEFAULT 0 CHECK(IsCompleted <= 0 AND IsCompleted <= 1)" +
+    public static final String CREATE_TASKS_TABLE = "CREATE TABLE IF NOT EXISTS Tasks (" +
+            " TaskID INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT UNIQUE," +
+            " JobID INTEGER DEFAULT NULL," +
+            " MemberID INTEGER DEFAULT NULL," +
+            " Description TEXT NOT NULL UNIQUE," +
+            " IsCompleted INTEGER NOT NULL DEFAULT 0 CHECK(IsCompleted <= 0 AND IsCompleted <= 1)" +
             ")";
     public static final String CREATE_TASKLIST_TABLE = "CREATE TABLE IF NOT EXISTS `TaskList` (" +
             " `TaskID` INTEGER UNIQUE," +
@@ -380,7 +380,7 @@ public class DBAdapter
         // Get the all members' data (including related data in other tables) present in the database
         cursor = db.rawQuery("SELECT u.MemberID, u.Username, u.Password, u.Access," +
                 " m.Firstname, m.Lastname, m.Age, m.DateOfHire, " +
-                "m.Phone, m.Image"+
+                "m.Phone, m.ProfilePicture"+
                 " FROM Users u" +
                 " INNER JOIN Members m ON u.MemberID == m.MemberID", null);
 
@@ -436,6 +436,12 @@ public class DBAdapter
             }
         }
 
+        cursor = db.rawQuery("SELECT JobName FROM Jobs", null);
+
+        while(cursor.moveToNext())
+        {
+            jobList.add(cursor.getString(0));
+        }
         // Find the number of completed/uncompleted jobs
         cursor = db.rawQuery("SELECT IsCompleted FROM Jobs", null);
 
@@ -694,7 +700,7 @@ public class DBAdapter
         }
         else
         {
-            cv.put("ExpectedJobDuration", 1);
+            cv.put("ExpectedJobDuration", expectedDuration);
         }
 
         // Check that actual job duration is not less than 0 else set to default 0
@@ -1258,6 +1264,284 @@ public class DBAdapter
         this.closeDB();
 
         return retValue;
+    }
+
+
+    /*
+     * FUNCTION:
+     *		IdentifyTask(String taskDescription)
+     * DESCRIPTION:
+     *		Returns the taskID of the identified task
+     * PARAMETERS:
+     *          String taskDescription  : The task description used to identify the task
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public int IdentifyTask(String taskDescription)
+    {
+        // Variables
+        int retValue = 0;
+        Cursor cursor;
+        String[] args = new String[1];
+
+        args[0] = taskDescription;
+
+        this.openReadableDB();
+
+        cursor = db.rawQuery("SELECT TaskID FROM Tasks WHERE TaskDescription = ?", args);
+
+        if (cursor.getCount() == 0)
+        {
+            return FAILURE;
+        }
+
+        while(cursor.moveToNext())
+        {
+            retValue = cursor.getInt(0);
+        }
+
+        this.closeDB();
+        this.closeCursor(cursor);
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		IsTaskCompleted(String taskDescription)
+     * DESCRIPTION:
+     *		Returns the completion status of the task
+     * PARAMETERS:
+     *          String taskDescription  : The task description used to identify the task
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public int IsTaskCompleted(String taskDescription)
+    {
+        // Variables
+        int retValue = 0;
+        Cursor cursor;
+        String[] args = new String[1];
+
+        args[0] = taskDescription;
+
+        this.openReadableDB();
+
+        cursor = db.rawQuery("SELECT IsCompleted FROM Tasks WHERE TaskDescription = ?", args);
+
+        if (cursor.getCount() == 0)
+        {
+            return FAILURE;
+        }
+
+        while(cursor.moveToNext())
+        {
+            retValue = cursor.getInt(0);
+        }
+
+        this.closeDB();
+        this.closeCursor(cursor);
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		AssignMemberToTask(String taskDescription, String username)
+     * DESCRIPTION:
+     *		Takes data from the parameter list and update the appropriate task
+     * PARAMETERS:
+     *          String taskDescription  : The newTask's description
+     *          String username         : The associated Member's username (used to identify the member)
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long AssignMemberToTask(String taskDescription, String username)
+    {
+        // Variables
+        long retValue = 0;
+        int id = 0;
+        ContentValues cv = new ContentValues();
+        String[] args = new String[1];
+
+        // Check if the Task was found
+        id = IdentifyTask(taskDescription);
+        if (id == FAILURE)
+        {
+            return FAILURE;
+        }
+        args[0] = Integer.toString(id);
+
+        // Check that the member was identified
+        if (IdentifyMemberID(username) == FAILED_TO_RETRIEVE_MEMBERID)
+        {
+            return FAILED_TO_RETRIEVE_MEMBERID;
+        }
+        cv.put("MemberID", IdentifyMemberID(username));
+
+        this.openWriteableDB();
+
+        // Insert into the Tasks table
+        retValue = db.update("Tasks", cv, "TaskID", args);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		AssignTaskToJob(String taskDescription, String jobName)
+     * DESCRIPTION:
+     *		Takes data from the parameter list and update the appropriate task
+     * PARAMETERS:
+     *          String taskDescription  : The newTask's description
+     *			String jobName          : The associated job's name (used to identify the job)
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long AssignTaskToJob(String taskDescription, String jobName)
+    {
+        // Variables
+        long retValue = 0;
+        int id = 0;
+        ContentValues cv = new ContentValues();
+        String[] args = new String[1];
+
+        // Check if the Task was found
+        id = IdentifyTask(taskDescription);
+        if (id == FAILURE)
+        {
+            return FAILURE;
+        }
+        args[0] = Integer.toString(id);
+
+        // Check that the job was Identified
+        if (IdentifyJobID(jobName) == FAILED_TO_RETRIEVE_JOBID)
+        {
+            return FAILED_TO_RETRIEVE_JOBID;
+        }
+        cv.put("JobID", IdentifyJobID(jobName));
+
+        this.openWriteableDB();
+
+        // Insert into the Tasks table
+        retValue = db.update("Tasks", cv, "TaskID", args);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		InsertNewTask(String taskDescription, Integer isCompleted)
+     * DESCRIPTION:
+     *		Takes data from the parameter list and creates a new task
+     * PARAMETERS:
+     *          String taskDescription  : The newTask's description
+     *			Integer isCompleted     : The completion status of the task
+     * RETURNS:
+     *			int : Returns the RowID of the newly inserted row upon successful insertion, else FAILURE retCode is returned (Non-negative return values are successful)
+     */
+    public long InsertNewTask(String taskDescription, Integer isCompleted)
+    {
+        // Variables
+        long retValue = 0;
+        int id = 0;
+        ContentValues cv = new ContentValues();
+
+        id = GetTotalNumberOfTasks() + 1;
+
+        cv.put("JobID", -1);
+        cv.put("TaskID", id);
+        cv.put("Description", taskDescription);
+
+        // Check if the result is not valid and set to default 0 (incomplete)
+        if (isCompleted == null || !(isCompleted >= 0 && isCompleted <= 1))
+        {
+            isCompleted = 0;
+        }
+        cv.put("IsCompleted", isCompleted);
+
+        this.openWriteableDB();
+
+        // Insert into the Tasks table
+        retValue = db.insert("Tasks", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        // Clear the ContentValues and load with the new Task's ID and IsCompleted status
+        cv = new ContentValues();
+        cv.put("TaskID", id);
+        cv.put("IsCompleted", isCompleted);
+
+        // Insert into the TaskList table
+        retValue = db.insert("TaskList", null, cv);
+
+        if (retValue == -1)
+        {
+            return FAILURE;
+        }
+
+        this.closeDB();
+
+        return retValue;
+    }
+
+    /*
+     * FUNCTION:
+     *		GetUnassignedTasks()
+     * DESCRIPTION:
+     *		Get all tasks that have not been assigned to a job and return them in a list
+     * PARAMETERS:
+     *          N/A
+     * RETURNS:
+     *			List<String> : Returns the list of unassigned tasks
+     */
+    public List<String> GetUnassignedTasks()
+    {
+        // Variables
+        Cursor cursor;
+        List<String> unassignedTasks = new ArrayList<String>();
+
+        // Open readable database
+        this.openReadableDB();
+
+        // Get all tasks that are not assigned to a job
+
+        cursor = db.rawQuery("SELECT Description FROM Tasks WHERE JobID = -1", null);
+
+        // Check if there are no tasks return, if so then return FAILURE retCode
+        if (cursor.getCount() == 0)
+        {
+            return null;
+        }
+
+        // If there are tasks returned then move to the next task in the cursor and add the task description to the list
+        while(cursor.moveToNext())
+        {
+            unassignedTasks.add(cursor.getString(0));
+        }
+
+        // Close the database and the cursor
+        this.closeDB();
+        this.closeCursor(cursor);
+
+        return unassignedTasks;
     }
 }
 

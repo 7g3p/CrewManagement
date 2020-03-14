@@ -20,11 +20,6 @@
     <string name="lblSummary">Progress Report</string>
     <string name="postMessage">Send</string>
     <string name="lblPercent">Percent Complete:</string>
-    <string name="jobAssignmentHeader">JOB MANAGEMENT</string>
-    <string name="Assign_Job">Assign Job</string>
-    <string name="Create_Job">Create Job</string>
-    <string name="job_hint">Enter Job to assign</string>
-    <string name="employee_hint">Enter Employee for Job</string>
     <string name="lblAppIntro">Welcome to the Crew Management Application. </string>
     <string name="admin">Administrator Screen</string>
     <string name="job">Job Screen</string>
@@ -32,4 +27,27 @@
     <string name="progress">Progress Screen</string>
     <string name="news_feed">NewsFeed Screen</string>
     <string name="profile">Profile Screen</string>
+	
+	 <!-- STRINGS FOR TAB NAMES and JobAssignment Class -->
+    <string name="create_Job">Create Job</string>
+    <string name="create_Task">Create Task</string>
+    <string name="addMemberToJob">Add Member To Job</string>
+    <string name="addMemberToTask">Add Member To Task</string>
+    <string name="addTaskToJob">Add Task To Job</string>
+    <string name="removeJob">Remove Job</string>
+    <string name="removeTask">Remove Task</string>
+
+    <string name="jobAssignmentHeader">JOB MANAGEMENT</string>
+    <string name="Assign_Job">Assign Job</string>
+    <string name="Create_Job">Create Job</string>
+    <string name="job_hint">Enter Job to assign</string>
+    <string name="employee_hint">Enter Employee for Job</string>
+    <string name="Clear_Form">Clear Forms</string>
+    <string name="job_hint_creation">Enter Job Name to Create</string>
+    <string name="job_duration_hint">Enter Duration of Job</string>
+    <string name="task_hint_creation">Enter Task Description. Ex: Mix Bedroom Paint</string>
+
+    <string name="Select_Job">Select Job</string>
+    <string name="Select_Task">Select Task</string>
+
 </resources>

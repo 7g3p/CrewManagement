@@ -1,129 +1,89 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".NewJob">
+    tools:context=".JobAssignment">
 
-
-    <Button
-        android:id="@+id/btnAssignJob"
-        android:layout_width="wrap_content"
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appbar"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginEnd="44dp"
-        android:layout_marginRight="44dp"
-        android:layout_marginBottom="22dp"
-        android:onClick="assignJob"
-        android:text="@string/Assign_Job"
-        app:layout_constrainedHeight="true"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintWidth_default="wrap" />
+        android:theme="@style/AppTheme">
 
+        <TextView
+            android:id="@+id/title"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:minHeight="?actionBarSize"
+            android:text="@string/app_name"
+            android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+            android:textColor="#FCFCFC" />
 
-    <EditText
-        android:id="@+id/txtEmployee"
-        android:layout_width="322dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginTop="25dp"
-        android:layout_marginEnd="45dp"
-        android:layout_marginRight="45dp"
-        android:layout_marginBottom="5dp"
-        android:background="#3D03A9F4"
-        android:gravity="center"
-        android:hint="@string/employee_hint"
-        android:inputType="textShortMessage"
-        android:isScrollContainer="false"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        android:verticalScrollbarPosition="right"
-        app:layout_constraintBottom_toTopOf="@+id/txtJob"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="1.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintWidth_default="wrap"
-        android:importantForAutofill="no" />
+    </com.google.android.material.appbar.AppBarLayout>
 
-    <EditText
-        android:id="@+id/txtJob"
-        android:layout_width="322dp"
-        android:layout_height="46dp"
-        android:layout_marginStart="45dp"
-        android:layout_marginTop="7dp"
-        android:layout_marginEnd="44dp"
-        android:background="#3D03A9F4"
-        android:gravity="center"
-        android:hint="@string/job_hint"
-        android:importantForAutofill="no"
-        android:inputType="textUri"
-        android:isScrollContainer="false"
-        android:textColor="#000000"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtEmployee"
-        app:layout_constraintWidth_default="wrap" />
+    <androidx.viewpager.widget.ViewPager
+        android:id="@+id/view_pager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
-    <ListView
-        android:id="@+id/listView_Employees"
-        android:layout_width="190dp"
-        android:layout_height="375dp"
-        android:layout_marginStart="4dp"
-        android:layout_marginLeft="4dp"
-        android:layout_marginBottom="20dp"
-        android:isScrollContainer="false"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        android:verticalScrollbarPosition="right"
-        app:layout_constraintBottom_toTopOf="@+id/btnCreateJob"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.02"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtJob"
-        app:layout_constraintVertical_bias="0.75"
-        app:layout_constraintWidth_default="wrap" />
-
-    <ListView
-        android:id="@+id/listView_Jobs"
-        android:layout_width="190dp"
-        android:layout_height="375dp"
-        android:layout_marginEnd="4dp"
-        android:layout_marginRight="4dp"
-        android:layout_marginBottom="20dp"
-        android:isScrollContainer="false"
-        android:scrollbarAlwaysDrawVerticalTrack="true"
-        app:layout_constraintBottom_toTopOf="@+id/btnAssignJob"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.98"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/txtJob"
-        app:layout_constraintVertical_bias="0.75"
-        app:layout_constraintWidth_default="wrap" />
-
-    <Button
-        android:id="@+id/btnCreateJob"
-        android:layout_width="wrap_content"
+    <com.google.android.material.tabs.TabLayout
+        android:id="@+id/tabs"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginStart="45dp"
-        android:layout_marginLeft="45dp"
-        android:layout_marginBottom="22dp"
-        android:text="@string/Create_Job"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintWidth_default="wrap"
-        android:onClick="newJob"/>
+        android:background="?attr/colorPrimary"
+        android:textAppearance="@style/TextAppearance.Widget.AppCompat.Toolbar.Title"
+        android:isScrollContainer="true"
+        app:layout_anchor="@+id/view_pager"
+        app:layout_anchorGravity="bottom|center"
+        app:tabTextColor="@android:color/white"
+        app:tabMode="scrollable" >
 
-    <Spinner
-        android:id="@+id/jobAssignMenu"
-        android:layout_width="170dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="48dp"
-        android:layout_marginEnd="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/createJob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_Job" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/createTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/create_Task" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/memberToJob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/addMemberToJob" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/memberToTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/addMemberToTask" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/taskToJob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/addTaskToJob" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/removeTask"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/removeTask" />
+
+        <com.google.android.material.tabs.TabItem
+            android:id="@+id/removeJob"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="@string/removeJob" />
+
+    </com.google.android.material.tabs.TabLayout>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

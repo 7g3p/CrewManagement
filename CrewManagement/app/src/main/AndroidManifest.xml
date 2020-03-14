@@ -11,7 +11,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".Navigation" />
         <activity android:name=".ChangePassword" />
-        <activity android:name=".NewJob" />
         <activity android:name=".NewMember" />
         <activity android:name=".Administrator"
             android:label="Administrator"
@@ -26,8 +25,6 @@
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Navigation"></meta-data>
         </activity>
-
-
         <activity android:name=".ProgressScreen"
             android:label="ProgressScreen"
             android:parentActivityName=".Navigation">
@@ -47,7 +44,7 @@
                 android:value=".Navigation"></meta-data>
         </activity>
         <activity android:name=".JobAssignment"
-            android:label="JobAssignment"
+            android:label="Job Assignment"
             android:parentActivityName=".Navigation">
             <meta-data android:name="android.support.PARENT_ACTIVITY"
                 android:value=".Navigation"></meta-data>

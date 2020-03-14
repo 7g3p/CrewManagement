@@ -54,12 +54,14 @@ public class MainActivity extends AppCompatActivity {
         Password = (EditText)findViewById(R.id.etPassword);
         Info = (TextView)findViewById(R.id.tvInfo);
         Login = (Button)findViewById(R.id.bLogin);
+        dbAdapter = new DBAdapter(this);
         if(check != null)//ensuring that the bundle isn't null
         {
             myData = (Data)check.getSerializable("data");
         }
         else
         {
+            // Error here, null call
             myData = dbAdapter.GetData();
             if( myData.eName.contains("0")) {
                 Byte[] image = newMember();
