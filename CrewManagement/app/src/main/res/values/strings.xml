@@ -36,7 +36,6 @@
     <string name="addTaskToJob">Add Task To Job</string>
     <string name="removeJob">Remove Job</string>
     <string name="removeTask">Remove Task</string>
-
     <string name="jobAssignmentHeader">JOB MANAGEMENT</string>
     <string name="Assign_Job">Assign Job</string>
     <string name="Create_Job">Create Job</string>
@@ -46,8 +45,22 @@
     <string name="job_hint_creation">Enter Job Name to Create</string>
     <string name="job_duration_hint">Enter Duration of Job</string>
     <string name="task_hint_creation">Enter Task Description. Ex: Mix Bedroom Paint</string>
-
     <string name="Select_Job">Select Job</string>
     <string name="Select_Task">Select Task</string>
+    <!-- END OF STRINGS FOR TAB NAMES AND JobAssignment CLASS -->
+
+    <string name="defaultJob1">Lumber Yard</string>
+    <string name="defaultJob2">Sweeper</string>
+    <string name="defaultJob3">Crane Operator</string>
+    <string name="defaultJob4">Supervisor</string>
+    <string name="defaultJob5">Sign Holder</string>
+    <string name="defaultJob6">Human Resources</string>
+    <string name="menuOption1">Administration Screen</string>
+    <string name="menuOption2">Members Screen</string>
+    <string name="menuOption3">View Screen</string>
+    <string name="menuOption4">Job Assignment Screen</string>
+    <string name="menuOption5">News Feed Screen</string>
+    <string name="menuOption6">Log out</string>
+    <string name="menuOption7">Call Tech Support</string>
 
 </resources>

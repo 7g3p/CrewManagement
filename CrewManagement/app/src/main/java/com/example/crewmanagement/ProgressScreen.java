@@ -35,7 +35,6 @@ public class ProgressScreen extends AppCompatActivity {
     TextView incompleteLabel = null;//initializing the TextView to null (not containing the appropriate widget yet)
     ProgressBar percentageComplete = null;//initializing the ProgressBar to null (not containing the appropriate widget yet)
     Data data = null;//initializing the Data object to null (not containing the appropriate widget yet)
-    TextView txtSummaryReport = null;
     String tempReport = "";
     Spinner sMenu = null;//the menu dropdown
 
@@ -57,7 +56,6 @@ public class ProgressScreen extends AppCompatActivity {
         completeLabel = findViewById(R.id.completeTasks);//finding a text-view with the id of 'completeTasks'
         incompleteLabel = findViewById(R.id.incompleteTasks);//finding a text-view with the id of 'incompleteTasks'
         percentageComplete = findViewById(R.id.percentComplete);
-        txtSummaryReport = findViewById(R.id.txtSummary);
         sMenu = (Spinner)findViewById(R.id.progressMenu);//retrieving the view by specifying its id and casting it as a spinner
         ArrayList<String> MenuItems = new ArrayList<String>();//creating an array list
 
@@ -81,18 +79,18 @@ public class ProgressScreen extends AppCompatActivity {
             Integer percentage = tempComplete / totalNumOfJobs;//getting the percentage of completed jobs by dividing the number
             //of completed tasks with the total number of tasks
 
-            completeLabel.setText(tempComplete);//setting the text that of the label that displays the amount of completed tasks
-            incompleteLabel.setText(tempIncomplete);//setting the text that of the label that displays the amount of incomplete tasks
-            percentageComplete.setProgress(percentage);//setting the progress of the status bar to indicate the percentage of
+//            completeLabel.setText(tempComplete);//setting the text that of the label that displays the amount of completed tasks
+//            incompleteLabel.setText(tempIncomplete);//setting the text that of the label that displays the amount of incomplete tasks
+//            percentageComplete.setProgress(percentage);//setting the progress of the status bar to indicate the percentage of
             // tasks complete
             tempReport = "The percentage of the "+ totalNumOfJobs  +" jobs complete is " + percentage;
-            txtSummaryReport.setText(tempReport);
+
             Log.i("ProgressScreen", "Progress report was successfully generated." );
 
         }
         else {
             Log.i("ProgressScreen", "No progress report was made.");
-            txtSummaryReport.setText("No report could be generated. There's no jobs.");
+
         }
 
         //Adding items to menu for navigation
@@ -105,16 +103,16 @@ public class ProgressScreen extends AppCompatActivity {
         //putting the arrays into each adapter and put the adapter into the spinners
         ArrayAdapter<String> mAdapter = new ArrayAdapter<String>(getApplicationContext(),android.R.layout.simple_spinner_dropdown_item,MenuItems);
         mAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        sMenu.setAdapter(mAdapter);
+//        sMenu.setAdapter(mAdapter);
 
-        sMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+//        sMenu.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             /*
              * FUNCTION:	onItemSelected
              * DESCRIPTION:	Whenever an item is selected
              * PARAMETERS:	AdapterView<?> parent, View view, int position, long id
              * RETURNS:	void - this function returns nothing
              */
-            @Override
+ /*           @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 if(position >= 0)//ensuring the user didn't select the screen they're currently on
                 {
@@ -171,6 +169,8 @@ public class ProgressScreen extends AppCompatActivity {
                 }
 
             }
+
+  */
             /*
              * FUNCTION:	onNothingSelected
              * DESCRIPTION:	Whenever an item is not selected
@@ -178,11 +178,11 @@ public class ProgressScreen extends AppCompatActivity {
              * RETURNS:	void - this function returns nothing
              */
 
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
+//            @Override
+//            public void onNothingSelected(AdapterView<?> parent) {
 
-            }
-        });
+//            }
+ //       });
     }
 
 

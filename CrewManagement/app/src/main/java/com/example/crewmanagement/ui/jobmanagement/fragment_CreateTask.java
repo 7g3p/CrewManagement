@@ -123,7 +123,8 @@ public class fragment_CreateTask extends Fragment
     public void LoadListOfJobs()
     {
         Integer counter = 0;
-        ArrayList<String> incompleteJobs = new ArrayList<>();
+        List<String> unassignedTasks = new ArrayList<>();
+        List<String> incompleteJobs = new ArrayList<>();
         Integer numJobs = (data.getCompletedJobs() + data.getUncompletedJobs());
 
         while (counter < numJobs)
@@ -132,14 +133,10 @@ public class fragment_CreateTask extends Fragment
             incompleteJobs.add(jobName);
             counter++;
         }
-
-        // TODO No tasks are being returned from the database even when task exist and meet the criteria
-        List<String> unassignedTasks = new ArrayList<>();
         unassignedTasks = dbAdapter.GetUnassignedTasks();
 
         Integer pause = 0;
     }
-
 
     public interface MyTaskListener {
         public void CreateTask(Bundle args);

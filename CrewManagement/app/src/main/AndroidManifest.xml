@@ -12,6 +12,7 @@
         <activity android:name=".Navigation" />
         <activity android:name=".ChangePassword" />
         <activity android:name=".NewMember" />
+        <activity android:name=".ViewScreen"/>
         <activity android:name=".Administrator"
             android:label="Administrator"
             android:parentActivityName=".Navigation">
@@ -44,10 +45,7 @@
                 android:value=".Navigation"></meta-data>
         </activity>
         <activity android:name=".JobAssignment"
-            android:label="Job Assignment"
-            android:parentActivityName=".Navigation">
-            <meta-data android:name="android.support.PARENT_ACTIVITY"
-                android:value=".Navigation"></meta-data>
+            android:label="Job Assignment">
         </activity>
 
         <activity android:name=".MainActivity">

@@ -168,6 +168,5 @@ public class NewJob extends AppCompatActivity {
         Intent intent = new Intent(NewJob.this, Administrator.class);
         intent.putExtra("data", data);
         startActivity(intent);
-
     }
 }

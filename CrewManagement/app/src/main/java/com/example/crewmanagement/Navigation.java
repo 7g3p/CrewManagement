@@ -85,7 +85,7 @@ public class Navigation extends AppCompatActivity {
         but_Progress.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(com.example.crewmanagement.Navigation.this, ProgressScreen.class);
+                Intent intent = new Intent(com.example.crewmanagement.Navigation.this, ViewScreen.class);
                 intent.putExtra("data", info);
                 startActivity(intent);
             }
