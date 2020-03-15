@@ -10,12 +10,44 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <TextView
+            android:id="@+id/lblTaskSelection2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:text="@string/Select_Task"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/spnr_amtTaskList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/spnr_amtTaskList"
+            app:layout_constraintTop_toBottomOf="@+id/spnr_amtMemberList"
+            app:layout_constraintVertical_bias="0.95" />
+
+        <TextView
+            android:id="@+id/lblJobSelection3"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="5dp"
+            android:layout_marginTop="40dp"
+            android:text="@string/Select_Member"
+            android:textColor="#000000"
+            android:textSize="25sp"
+            app:layout_constraintBottom_toTopOf="@+id/spnr_amtMemberList"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.0"
+            app:layout_constraintStart_toStartOf="@+id/spnr_amtMemberList"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_bias="1.0" />
+
         <Spinner
-            android:id="@+id/spnr_amtJobList"
+            android:id="@+id/spnr_amtMemberList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="15dp"
+            android:layout_marginTop="84dp"
             app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="1.0"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -23,16 +55,16 @@
             android:id="@+id/spnr_amtTaskList"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="200dp"
+            android:layout_marginTop="170dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/spnr_amtJobList" />
+            app:layout_constraintTop_toBottomOf="@+id/spnr_amtMemberList" />
 
         <Button
             android:id="@+id/btnAddMemberToTask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="150dp"
+            android:layout_marginTop="115dp"
             android:text="@string/addMemberToTask"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.15"
@@ -40,7 +72,7 @@
             app:layout_constraintTop_toBottomOf="@+id/spnr_amtTaskList" />
 
         <Button
-            android:id="@+id/btnClearForm"
+            android:id="@+id/btnClearAMTForm"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="50dp"
@@ -50,7 +82,6 @@
             app:layout_constraintTop_toTopOf="@+id/btnAddMemberToTask" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
 
 
 </FrameLayout>

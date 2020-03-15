@@ -1,3 +1,11 @@
+/*
+ * FILE:             Fragment_CreateTask.Java
+ * PROJECT:          CrewManagement
+ * PROGRAMMER:       Alex MacCumber
+ * OTHER MEMBERS:    Alex Palmer, David Obeda, Stephen Perrin, Marissa Schmitt
+ * FIRST VERSION:    March 10th, 2020
+ * DESCRIPTION:      This file describes the functionality of the CreateTask screen.
+ */
 package com.example.crewmanagement.ui.jobmanagement;
 
 import android.content.Context;
@@ -33,8 +41,6 @@ public class fragment_CreateTask extends Fragment
     private Data data = null;
     private DBAdapter dbAdapter = null;
 
-    private String jobName = null;
-
     private SpinnerAdapter spnr_JNameAdapter;
 
 
@@ -65,12 +71,6 @@ public class fragment_CreateTask extends Fragment
         txt_TaskDesc = (EditText)view.findViewById(R.id.txtTaskDescription);
         dbAdapter = new DBAdapter(getActivity());
         data = dbAdapter.GetData();
-
-        // Waiting on database methods / fixes to implement these
-        LoadListOfJobs();
-        //spnr_JobList = (Spinner)view.findViewById(R.id.spnr_jobNames);
-        //spnr_JNameAdapter =
-
 
         return view;
     }
@@ -113,29 +113,22 @@ public class fragment_CreateTask extends Fragment
         }
     }
 
+
+
+    /*
+     * FUNCTION:
+     *		ClearForms()
+     * DESCRIPTION:
+     *		Resets the input forms to their default state
+     * PARAMETERS:
+     *			View : The view that the forms are in
+     * RETURNS:
+     *			VOID
+     */
     public void ClearForms(View v)
     {
         // Clear the various inputs on the layout screen
         txt_TaskDesc.setText("");
-    }
-
-
-    public void LoadListOfJobs()
-    {
-        Integer counter = 0;
-        List<String> unassignedTasks = new ArrayList<>();
-        List<String> incompleteJobs = new ArrayList<>();
-        Integer numJobs = (data.getCompletedJobs() + data.getUncompletedJobs());
-
-        while (counter < numJobs)
-        {
-            String jobName = data.getJobList(counter);
-            incompleteJobs.add(jobName);
-            counter++;
-        }
-        unassignedTasks = dbAdapter.GetUnassignedTasks();
-
-        Integer pause = 0;
     }
 
     public interface MyTaskListener {

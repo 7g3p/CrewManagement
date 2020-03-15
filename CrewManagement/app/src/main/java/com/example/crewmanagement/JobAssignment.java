@@ -1,28 +1,31 @@
+/*
+ * FILE:             JobAssignment.Java
+ * PROJECT:          CrewManagement
+ * PROGRAMMER:       Alex MacCumber
+ * OTHER MEMBERS:    Alex Palmer, David Obeda, Stephen Perrin, Marissa Schmitt
+ * FIRST VERSION:    March 10th, 2020
+ * DESCRIPTION:      This file describes the functionality of the Job Assignment screen.
+ */
 package com.example.crewmanagement;
 
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
+
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
-import android.view.Gravity;
+
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
-import android.widget.LinearLayout;
-import android.widget.ListView;
-import android.widget.PopupWindow;
-import android.widget.TextView;
+
 import android.widget.Toast;
 
+import com.example.crewmanagement.ui.jobmanagement.fragment_AssignMemberToJob;
+import com.example.crewmanagement.ui.jobmanagement.fragment_AssignMemberToTask;
 import com.example.crewmanagement.ui.jobmanagement.fragment_AssignTaskToJob;
 import com.example.crewmanagement.ui.jobmanagement.fragment_CreateJob;
 
-import androidx.annotation.NonNull;
 import androidx.viewpager.widget.ViewPager;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -30,41 +33,16 @@ import com.example.crewmanagement.ui.jobmanagement.SectionsPagerAdapter;
 import com.example.crewmanagement.ui.jobmanagement.fragment_CreateTask;
 import com.google.android.material.tabs.TabLayout;
 
-import java.util.List;
-
 public class JobAssignment extends AppCompatActivity
     implements  fragment_CreateJob.MyJobListener,
                 fragment_CreateTask.MyTaskListener,
-                fragment_AssignTaskToJob.MyAddTaskListener {
+                fragment_AssignTaskToJob.MyAddTaskListener,
+                fragment_AssignMemberToJob.MyMemToJobListener,
+                fragment_AssignMemberToTask.MyMemToTaskListener {
 
-    private final String job = "J";
-    private final String task = "T";
-    private final String taskToJob = "TJ";
-    private final String memberToJob = "MJ";
-    private final String memberToTask = "MT";
-
-    PopupWindow popup;
-    LinearLayout layout;
-    Boolean click;
-    TextView text;
-    LinearLayout.LayoutParams params;
-    Button button;
 
     private DBAdapter dbAdapter;
     private Data data;
-
-    private fragment_CreateJob.MyJobListener mjl = null;
-    private fragment_CreateTask.MyTaskListener mtl = null;
-
-    private Button btn_CreateJob = null;
-
-    private ListView jobList;
-    private ListView employeeList;
-
-    private Integer numJobs = 0;
-    private Integer numMembers = 0;
-
-    private String jobName;
 
 
     @Override
@@ -87,9 +65,6 @@ public class JobAssignment extends AppCompatActivity
             dbAdapter = new DBAdapter(this);
             data = dbAdapter.GetData();
         }
-        btn_CreateJob = findViewById(R.id.btnNewJob);
-        numJobs = data.jobList.size();
-        numMembers = data.numberOfMembers;
     }
 
     @Override
@@ -167,14 +142,13 @@ public class JobAssignment extends AppCompatActivity
         }
     }
 
-     /*
+    /*
      * FUNCTION:
      *		CreateJob()
      * DESCRIPTION:
-     *		Uses the DBAdapter class to insert a new job into the database using the user provided
-     *      data from the Create Job fragment
+     *		Utilizes the DBAdapter to Add a Job to the database
      * PARAMETERS:
-     *			Bundle args : Contains the data entered by the user on the fragment screen
+     *			Bundle args : Contains the user entered Job Information
      * RETURNS:
      *			VOID
      */
@@ -208,18 +182,16 @@ public class JobAssignment extends AppCompatActivity
 
     /*
      * FUNCTION:
-     *		getData()
+     *		CreateTask()
      * DESCRIPTION:
-     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     *		Utilizes the DBAdapter to Add a task to the database
      * PARAMETERS:
-     *			N/A
+     *			Bundle args : Contains the user entered task description
      * RETURNS:
-     *			Data : Returns a populated Data class object with ALL database data
+     *			VOID
      */
     public void CreateTask(Bundle args)
     {
-        //TODO Switch Statement For if a job was selected on create task screen or not
-
         long retcode = -1;
         retcode = dbAdapter.InsertNewTask(args.getString("tDescription"), null);
         if (retcode >= 0)
@@ -246,52 +218,111 @@ public class JobAssignment extends AppCompatActivity
 
     /*
      * FUNCTION:
-     *		getData()
+     *		TaskToJob()
      * DESCRIPTION:
-     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     *		Utilizes the DBAdapter to Assign a Task to a Job
      * PARAMETERS:
-     *			N/A
+     *			Bundle args : Contains the user selected job and task from the AssignTaskToJob fragment screen
      * RETURNS:
-     *			Data : Returns a populated Data class object with ALL database data
+     *			VOID
      */
     public void TaskToJob(Bundle args)
     {
-
+        long retcode = 0;
+        retcode = dbAdapter.AssignTaskToJob(args.getString("TaskDescription"), args.getString("JobName"));
+        if (retcode >= 0)
+        {
+            // Insertion of new task was successful
+            Context context = getApplicationContext();
+            CharSequence toastMsg = args.getString("MemberToAdd") + "was assigned to " + args.getString("JobToAssign");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.i("MemberToJob","Job Assignment Successful");
+        }
+        else
+        {
+            // Insertion failed
+            Context context = getApplicationContext();
+            CharSequence toastMsg = args.getString("MemberToAdd") + "was not assigned to " + args.getString("JobToAssign");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.e("MemberToJob","Job Assignment failed with retcode "+ retcode);
+        }
     }
 
     /*
      * FUNCTION:
-     *		getData()
+     *		MemberToJob()
      * DESCRIPTION:
-     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     *		Utilizes the DBAdapter to Assign a Member to a job
+     *      Currently not working, as the AssignMemberToTask method requires a username that was not accessible
      * PARAMETERS:
-     *			N/A
+     *			Bundle args : Contains the user selected Job and Member from the AssignTaskToJob fragment screen
      * RETURNS:
-     *			Data : Returns a populated Data class object with ALL database data
+     *			VOID
      */
     public void MemberToJob(Bundle args)
     {
-
+        long retcode = 0;
+        retcode = dbAdapter.AssignJobToMember(args.getString("MemberToAdd"), args.getString("jobToAssign"));
+        if (retcode >= 0)
+        {
+            // Insertion of new task was successful
+            Context context = getApplicationContext();
+            CharSequence toastMsg = args.getString("MemberToAdd") + "was assigned to " + args.getString("JobToAssign");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.i("MemberToJob","Job Assignment Successful");
+        }
+        else
+    {
+        // Insertion failed
+        Context context = getApplicationContext();
+        CharSequence toastMsg = args.getString("MemberToAdd") + "was not assigned to " + args.getString("JobToAssign");
+        int duration = Toast.LENGTH_SHORT;
+        Toast toast = Toast.makeText(context, toastMsg, duration);
+        toast.show();
+        Log.e("MemberToJob","Job Assignment failed with retcode "+ retcode);
     }
+}
 
     /*
      * FUNCTION:
-     *		getData()
+     *		MemberToTask()
      * DESCRIPTION:
-     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     *		Utilizes the DBAdapter to Assign a Member to a Task
+     *      Currently not working, as the AssignMemberToTask method requires a username that was not accessible
      * PARAMETERS:
-     *			N/A
+     *			Bundle args : Contains the user selected Member and Job from the AssignMemberToTask fragment screen
      * RETURNS:
-     *			Data : Returns a populated Data class object with ALL database data
+     *			VOID
      */
     public void MemberToTask(Bundle args)
     {
-
-    }
-
-
-    public void onClick()
-    {
-
+        long retcode = 0;
+        retcode = dbAdapter.AssignMemberToTask(args.getString("TaskToAssign"), args.getString("MemberToAssign"));
+        if (retcode >= 0)
+        {
+            // Insertion of new task was successful
+            Context context = getApplicationContext();
+            CharSequence toastMsg = args.getString("MemberToAssign") + "was assigned to " + args.getString("TaskToAssign");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.i("MemberToTask","Task Assignment Successful");
+        }
+        else
+        {
+            // Insertion failed
+            Context context = getApplicationContext();
+            CharSequence toastMsg = args.getString("MemberToAssign") + "was not assigned to " + args.getString("TaskToAssign");
+            int duration = Toast.LENGTH_SHORT;
+            Toast toast = Toast.makeText(context, toastMsg, duration);
+            toast.show();
+            Log.e("MemberToTask","Task Assignment failed with retcode "+ retcode);
+        }
     }
 }

@@ -1,3 +1,11 @@
+/*
+ * FILE:             fragment_CreateJob.Java
+ * PROJECT:          CrewManagement
+ * PROGRAMMER:       Alex MacCumber
+ * OTHER MEMBERS:    Alex Palmer, David Obeda, Stephen Perrin, Marissa Schmitt
+ * FIRST VERSION:    March 10th, 2020
+ * DESCRIPTION:      This file describes the functionality of the CreateJob screen.
+ */
 package com.example.crewmanagement.ui.jobmanagement;
 
 import android.content.Context;
@@ -129,7 +137,6 @@ public class fragment_CreateJob extends Fragment
                 bundle.putInt("jDuration", jobDuration);
                 bundle.putInt("jActual", jobActualDefault);
                 bundle.putInt("jStatus", jobStatusDefault);
-
                 mjl.CreateJob(bundle);
                 break;
 
@@ -144,13 +151,13 @@ public class fragment_CreateJob extends Fragment
 
     /*
      * FUNCTION:
-     *		getData()
+     *		ClearForms()
      * DESCRIPTION:
-     *		Queries the database to get all information related to the variables in the Data class to be filled and returned
+     *		Resets the input forms to their default state
      * PARAMETERS:
-     *			N/A
+     *			View : The view that the forms are in
      * RETURNS:
-     *			Data : Returns a populated Data class object with ALL database data
+     *			VOID
      */
     public void ClearForms(View v)
     {

@@ -753,7 +753,7 @@ public class DBAdapter
         // Variables
         int retValue = FAILURE;
         Cursor cursor;
-        String[] args = new String[1];
+        String[] args = new String[username.length()];
         // Transfer the parameters to the argument array
         args[3] = username;
         this.openReadableDB();
@@ -1288,7 +1288,7 @@ public class DBAdapter
 
         this.openReadableDB();
 
-        cursor = db.rawQuery("SELECT TaskID FROM Tasks WHERE TaskDescription = ?", args);
+        cursor = db.rawQuery("SELECT TaskID FROM Tasks WHERE Description = ?", args);
 
         if (cursor.getCount() == 0)
         {
@@ -1432,7 +1432,6 @@ public class DBAdapter
 
         // Insert into the Tasks table
         retValue = db.update("Tasks", cv, "TaskID", args);
-
         if (retValue == -1)
         {
             return FAILURE;

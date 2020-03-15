@@ -6,50 +6,53 @@
     android:layout_height="match_parent"
     tools:context=".NewsFeed">
 
+    <WebView
+        android:id="@+id/newsFeed"
+        android:layout_width="413dp"
+        android:layout_height="622dp"
+        app:layout_constraintBottom_toTopOf="@+id/GBLbtn"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="1.0">
+
+
+    </WebView>
+
+
     <Button
-        android:id="@+id/sendbutton"
+        android:id="@+id/CTVbtn"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:onClick="sendMessage"
-        android:text="@string/postMessage"
+        android:layout_marginStart="35dp"
+        android:enabled="true"
+        android:onClick="onClickCTV"
+        android:text="@string/ctv"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/CBCbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:enabled="true"
+        android:onClick="onClickCBC"
+        android:text="@string/cbc"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/GBLbtn"
+        app:layout_constraintStart_toEndOf="@+id/CTVbtn" />
+
+    <Button
+        android:id="@+id/GBLbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="35dp"
+        android:enabled="true"
+        android:onClick="onClickGBL"
+        android:text="@string/global"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <EditText
-        android:id="@+id/composeMessage"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
-        android:editable="true"
-        android:ems="10"
-        android:hint="Enter News Update"
-        android:inputType="textPersonName"
-        android:textSize="24sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toStartOf="@+id/sendbutton"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/sendbutton"
-        app:layout_constraintVertical_bias="1.0" />
-
-    <TextView
-        android:id="@+id/messageview"
-        android:layout_width="414dp"
-        android:layout_height="686dp"
-        android:layout_marginBottom="667dp"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/sendbutton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.0" />
-
-    <Spinner
-        android:id="@+id/newsFeedMenu"
-        android:layout_width="170dp"
-        android:layout_height="30dp"
-        android:layout_marginTop="52dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
