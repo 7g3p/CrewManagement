@@ -35,6 +35,7 @@ public class Navigation extends AppCompatActivity {
     Button but_Progress;
     Button but_Newsfeed;
     Button but_Profile;
+    Button but_Maps;
     Data info;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,6 +47,7 @@ public class Navigation extends AppCompatActivity {
         but_Progress = (Button)findViewById(R.id.but_Progress);
         but_Newsfeed = (Button)findViewById(R.id.but_Newsfeed);
         but_Profile = (Button)findViewById(R.id.but_Profile);
+        but_Maps = (Button)findViewById(R.id.but_Maps);
         Intent intent = getIntent();//creating a new intent
         Bundle data = intent.getExtras();//getting extras from the intent
         if(data != null)//ensuring that the bundle isn't null
@@ -53,8 +55,7 @@ public class Navigation extends AppCompatActivity {
             info = (Data)data.getSerializable("data");
         }
         else {
-            // info = getData();
-            info = new Data("admin","1234", "Alex", 20, "Febuary 4th", "boss", "519-555-5555", newMember());//creating a new data object
+             info = getData();
 
         }
         but_Admin.setOnClickListener(new View.OnClickListener() {
@@ -100,9 +101,17 @@ public class Navigation extends AppCompatActivity {
         but_Profile.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Intent intent = new Intent(com.example.crewmanagement.Navigation.this, Profile.class);
-                //intent.putExtra("data", info);
-                //startActivity(intent);
+                Intent intent = new Intent(com.example.crewmanagement.Navigation.this, Profile.class);
+                intent.putExtra("data", info);
+                startActivity(intent);
+            }
+        });
+        but_Maps.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(com.example.crewmanagement.Navigation.this, MapsActivity.class);
+                intent.putExtra("data", info);
+                startActivity(intent);
             }
         });
         Integer ID = getIntent().getIntExtra("ID", 0);
