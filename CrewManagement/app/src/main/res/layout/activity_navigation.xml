@@ -8,6 +8,18 @@
     android:paddingTop="?attr/actionBarSize">
 
 
+
+    <Button
+        android:id="@+id/but_Maps"
+        android:layout_width="391dp"
+        android:layout_height="127dp"
+        android:text="@string/Maps"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.828" />
+
     <Button
         android:id="@+id/but_Profile"
         android:layout_width="201dp"
